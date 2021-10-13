@@ -16,6 +16,10 @@ namespace Spotifalso.Infrastructure.Data.Config
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserDBMapping());
+
+            #region UserSeed
+            modelBuilder.Entity<User>().HasData(new User(string.Empty, "admin", Core.Enums.Roles.Admin, "admin", "Initial Admin user"));
+            #endregion
         }
     }
 }
