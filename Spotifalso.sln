@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.31410.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotifalso.API", "Spotifalso.API\Spotifalso.API.csproj", "{D2FFAC8C-C0F1-4D4B-B3DD-A8556E25CD67}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A9EEEBA3-F9EF-4F05-92D8-8D943368A934}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotifalso.Aplication", "Spotifalso.Aplication\Spotifalso.Aplication.csproj", "{247D8219-603C-45EC-9DA3-FB8BC7679C83}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +19,17 @@ Global
 		{D2FFAC8C-C0F1-4D4B-B3DD-A8556E25CD67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2FFAC8C-C0F1-4D4B-B3DD-A8556E25CD67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2FFAC8C-C0F1-4D4B-B3DD-A8556E25CD67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{247D8219-603C-45EC-9DA3-FB8BC7679C83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{247D8219-603C-45EC-9DA3-FB8BC7679C83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{247D8219-603C-45EC-9DA3-FB8BC7679C83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{247D8219-603C-45EC-9DA3-FB8BC7679C83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D2FFAC8C-C0F1-4D4B-B3DD-A8556E25CD67} = {A9EEEBA3-F9EF-4F05-92D8-8D943368A934}
+		{247D8219-603C-45EC-9DA3-FB8BC7679C83} = {A9EEEBA3-F9EF-4F05-92D8-8D943368A934}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1DC97F2C-31A4-4AFC-8484-13290EA020EA}

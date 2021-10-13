@@ -15,4 +15,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Spotifalso.Aplication\Spotifalso.Aplication.csproj" />
+  </ItemGroup>
+
 </Project>
