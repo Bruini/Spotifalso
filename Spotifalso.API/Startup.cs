@@ -1,18 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Spotifalso.Infrastructure.Data.Config;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Spotifalso.API
 {
@@ -36,9 +29,11 @@ namespace Spotifalso.API
             });
 
             #region Infrastructure
-            var mySQLConnection = Configuration.GetConnectionString(nameof(SpotifalsoDBContext));
-            services.AddDbContext<SpotifalsoDBContext>(options => options.UseMySql(mySQLConnection, ServerVersion.AutoDetect(mySQLConnection)));
-            services.AddScoped<DbContext, SpotifalsoDBContext>();
+
+            services.AddDbContextPool<SpotifalsoDBContext>(builder => {
+                var mySQLConnection = Configuration.GetConnectionString(nameof(SpotifalsoDBContext));
+                builder.UseMySql(mySQLConnection, ServerVersion.AutoDetect(mySQLConnection));
+            });
             #endregion
         }
 

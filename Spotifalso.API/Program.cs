@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Spotifalso.Infrastructure.Data.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +14,12 @@ namespace Spotifalso.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var webHost = CreateHostBuilder(args).Build();
+            await ApplyMigrations(webHost.Services);
+            await webHost.RunAsync();
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -22,5 +28,12 @@ namespace Spotifalso.API
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+        private static async Task ApplyMigrations(IServiceProvider serviceProvider)
+        {
+            using var scope = serviceProvider.CreateScope();
+            await using SpotifalsoDBContext dbContext = scope.ServiceProvider.GetRequiredService<SpotifalsoDBContext>();
+            await dbContext.Database.MigrateAsync();
+        }
     }
 }
