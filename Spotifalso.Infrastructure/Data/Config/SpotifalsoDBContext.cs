@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Spotifalso.Core.Models;
+using Spotifalso.Infrastructure.Data.Config.Mappings;
 
 namespace Spotifalso.Infrastructure.Data.Config
 {
@@ -9,11 +11,11 @@ namespace Spotifalso.Infrastructure.Data.Config
 
         }
        
-        //TODO Add DbSet
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           //TODO Add Modelbuilder mapping
+            modelBuilder.ApplyConfiguration(new UserDBMapping());
         }
     }
 }
