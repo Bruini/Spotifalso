@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Spotifalso.Aplication\Spotifalso.Aplication.csproj" />
+    <ProjectReference Include="..\Spotifalso.Infrastructure\Spotifalso.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

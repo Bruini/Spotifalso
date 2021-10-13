@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotifalso.Aplication", "Sp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotifalso.Core", "Spotifalso.Core\Spotifalso.Core.csproj", "{055C8E36-75D9-4EBD-8556-179EA8D69B3B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotifalso.Infrastructure", "Spotifalso.Infrastructure\Spotifalso.Infrastructure.csproj", "{8436D4DD-BE6E-4353-BC6B-83E4FBF1558D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{055C8E36-75D9-4EBD-8556-179EA8D69B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{055C8E36-75D9-4EBD-8556-179EA8D69B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{055C8E36-75D9-4EBD-8556-179EA8D69B3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8436D4DD-BE6E-4353-BC6B-83E4FBF1558D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8436D4DD-BE6E-4353-BC6B-83E4FBF1558D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8436D4DD-BE6E-4353-BC6B-83E4FBF1558D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8436D4DD-BE6E-4353-BC6B-83E4FBF1558D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,6 +43,7 @@ Global
 		{D2FFAC8C-C0F1-4D4B-B3DD-A8556E25CD67} = {A9EEEBA3-F9EF-4F05-92D8-8D943368A934}
 		{247D8219-603C-45EC-9DA3-FB8BC7679C83} = {A9EEEBA3-F9EF-4F05-92D8-8D943368A934}
 		{055C8E36-75D9-4EBD-8556-179EA8D69B3B} = {A9EEEBA3-F9EF-4F05-92D8-8D943368A934}
+		{8436D4DD-BE6E-4353-BC6B-83E4FBF1558D} = {A9EEEBA3-F9EF-4F05-92D8-8D943368A934}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1DC97F2C-31A4-4AFC-8484-13290EA020EA}
