@@ -36,5 +36,10 @@ namespace Spotifalso.Core.Models
         {
             Bio = bio;
         }
+
+        public void ChangePassword(string password)
+        {
+            Password = password;
+        }
     }
 }

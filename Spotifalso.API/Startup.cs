@@ -5,7 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Spotifalso.API.Middlewares;
 using Spotifalso.Aplication.Interfaces.Repositories;
+using Spotifalso.Aplication.Interfaces.Services;
+using Spotifalso.Aplication.Services;
 using Spotifalso.Infrastructure.Data.Config;
 using Spotifalso.Infrastructure.Data.Repositories;
 
@@ -30,9 +33,16 @@ namespace Spotifalso.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Spotifalso.API", Version = "v1" });
             });
 
+            #region AplicationServices
+
+            services.AddScoped<IUserService, UserService>();
+
+            #endregion
+
             #region Infrastructure
 
-            services.AddDbContextPool<SpotifalsoDBContext>(builder => {
+            services.AddDbContextPool<SpotifalsoDBContext>(builder =>
+            {
                 var mySQLConnection = Configuration.GetConnectionString(nameof(SpotifalsoDBContext));
                 builder.UseMySql(mySQLConnection, ServerVersion.AutoDetect(mySQLConnection));
             });
@@ -40,6 +50,9 @@ namespace Spotifalso.API
             services.AddScoped<IUserRepository, UserRepository>();
 
             #endregion
+
+
+            services.AddTransient<ExceptionHandlingMiddleware>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +64,8 @@ namespace Spotifalso.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Spotifalso.API v1"));
             }
+
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
 

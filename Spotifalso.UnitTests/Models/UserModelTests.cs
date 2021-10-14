@@ -58,5 +58,16 @@ namespace Spotifalso.UnitTests.Models
             Assert.NotNull(user);
             Assert.Equal("new bio", user.Bio);
         }
+
+        [Fact]
+        public void User_Should_Change_Password()
+        {
+            var user = new User(string.Empty, "abc001", Roles.Admin, "Admin", "User admin");
+
+            user.ChangePassword("001abc");
+
+            Assert.NotNull(user);
+            Assert.Equal("001abc", user.Password);
+        }
     }
 }
