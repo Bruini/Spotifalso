@@ -12,7 +12,7 @@ namespace Spotifalso.UnitTests.Models
         [Theory]
         [InlineData(Roles.Admin)]
         [InlineData(Roles.Subscriber)]
-        public void User_Constructor_Should_Create_With_Excpected_Role(Roles role)
+        public void User_Should_Create_With_Excpected_Role(Roles role)
         {
             var user = new User(string.Empty, "abc001", role, "Admin", "User admin");
 
@@ -26,23 +26,37 @@ namespace Spotifalso.UnitTests.Models
         }
 
         [Fact]
-        public void User_With_Empty_Nickname_Should_Throws_Exception()
+        public void User_Should_Change_Nickname()
         {
-            var ex = Assert.Throws<Exception>(() => new User(string.Empty, "abc001", Roles.Admin, string.Empty, "User admin"));
-            Assert.Equal("Nickname is required", ex.Message);
+            var user = new User(string.Empty, "abc001", Roles.Admin, "Admin", "User admin");
+
+            user.ChangeNickname("new nickname");
+
+            Assert.NotNull(user);
+            Assert.Equal("new nickname", user.Nickname);
         }
 
         [Fact]
-        public void User_With_Nickname_More_Than_100_Characters_Should_Throws_Exception()
+        public void User_Should_Change_ProfilePhotoId()
         {
-            string nickname = string.Empty;
-            for (int i = 0; i < 101; i++)
-            {
-                nickname += "a";
-            }
+            var user = new User(string.Empty, "abc001", Roles.Admin, "Admin", "User admin");
 
-            var ex = Assert.Throws<Exception>(() => new User(string.Empty, "abc001", Roles.Admin, nickname, "User admin"));
-            Assert.Equal("The maximum length of nickname is 100 characters", ex.Message);
+            var profilePhotoId = Guid.NewGuid().ToString();
+            user.ChangeProfilePhotoId(profilePhotoId);
+
+            Assert.NotNull(user);
+            Assert.Equal(profilePhotoId, user.ProfilePhotoId);
+        }
+
+        [Fact]
+        public void User_Should_Change_Bio()
+        {
+            var user = new User(string.Empty, "abc001", Roles.Admin, "Admin", "User admin");
+
+            user.ChangeBio("new bio");
+
+            Assert.NotNull(user);
+            Assert.Equal("new bio", user.Bio);
         }
     }
 }

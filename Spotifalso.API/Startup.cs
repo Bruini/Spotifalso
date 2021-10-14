@@ -5,7 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Spotifalso.Aplication.Interfaces.Repositories;
 using Spotifalso.Infrastructure.Data.Config;
+using Spotifalso.Infrastructure.Data.Repositories;
 
 namespace Spotifalso.API
 {
@@ -34,6 +36,9 @@ namespace Spotifalso.API
                 var mySQLConnection = Configuration.GetConnectionString(nameof(SpotifalsoDBContext));
                 builder.UseMySql(mySQLConnection, ServerVersion.AutoDetect(mySQLConnection));
             });
+
+            services.AddScoped<IUserRepository, UserRepository>();
+
             #endregion
         }
 

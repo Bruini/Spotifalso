@@ -1,7 +1,5 @@
 ﻿using Spotifalso.Core.Enums;
-using Spotifalso.Core.Validators;
 using System;
-using System.Linq;
 
 namespace Spotifalso.Core.Models
 {
@@ -22,19 +20,21 @@ namespace Spotifalso.Core.Models
             Role = role;
             Nickname = nickname;
             Bio = bio;
-
-            ValidateParameters();
         }
 
-        private void ValidateParameters()
+        public void ChangeNickname(string nickname)
         {
-            var validator = new UserValidator();
-            var validationResult = validator.Validate(this);
+            Nickname = nickname;
+        }
 
-            if (!validationResult.IsValid)
-            {
-                throw new Exception(validationResult.Errors.FirstOrDefault().ErrorMessage);
-            }
+        public void ChangeProfilePhotoId(string profilePhotoId)
+        {
+            ProfilePhotoId = profilePhotoId;
+        }
+
+        public void ChangeBio(string bio)
+        {
+            Bio = bio;
         }
     }
 }
