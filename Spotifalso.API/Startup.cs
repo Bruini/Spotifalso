@@ -1,3 +1,4 @@
+using Amazon.KeyManagementService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Spotifalso.API.Middlewares;
+using Spotifalso.Aplication.Interfaces.Infrastructure;
 using Spotifalso.Aplication.Interfaces.Repositories;
 using Spotifalso.Aplication.Interfaces.Services;
 using Spotifalso.Aplication.Services;
+using Spotifalso.Infrastructure.AWS;
 using Spotifalso.Infrastructure.Data.Config;
 using Spotifalso.Infrastructure.Data.Repositories;
 
@@ -26,20 +29,17 @@ namespace Spotifalso.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Spotifalso.API", Version = "v1" });
             });
-
-            #region AplicationServices
-
-            services.AddScoped<IUserService, UserService>();
-
-            #endregion
+            services.AddTransient<ExceptionHandlingMiddleware>();
 
             #region Infrastructure
+
+            //AWS services
+            services.AddAWSService<IAmazonKeyManagementService>();
 
             services.AddDbContextPool<SpotifalsoDBContext>(builder =>
             {
@@ -51,8 +51,14 @@ namespace Spotifalso.API
 
             #endregion
 
+            #region AplicationServices
+            services.AddScoped<IKms, Kms>();
+            services.AddScoped<IUserService, UserService>();
 
-            services.AddTransient<ExceptionHandlingMiddleware>();
+            #endregion
+
+
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

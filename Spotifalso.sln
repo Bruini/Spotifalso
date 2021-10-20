@@ -3,21 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31410.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotifalso.API", "Spotifalso.API\Spotifalso.API.csproj", "{D2FFAC8C-C0F1-4D4B-B3DD-A8556E25CD67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotifalso.API", "Spotifalso.API\Spotifalso.API.csproj", "{D2FFAC8C-C0F1-4D4B-B3DD-A8556E25CD67}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A9EEEBA3-F9EF-4F05-92D8-8D943368A934}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotifalso.Aplication", "Spotifalso.Aplication\Spotifalso.Aplication.csproj", "{247D8219-603C-45EC-9DA3-FB8BC7679C83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotifalso.Aplication", "Spotifalso.Aplication\Spotifalso.Aplication.csproj", "{247D8219-603C-45EC-9DA3-FB8BC7679C83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotifalso.Core", "Spotifalso.Core\Spotifalso.Core.csproj", "{055C8E36-75D9-4EBD-8556-179EA8D69B3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotifalso.Core", "Spotifalso.Core\Spotifalso.Core.csproj", "{055C8E36-75D9-4EBD-8556-179EA8D69B3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotifalso.Infrastructure", "Spotifalso.Infrastructure\Spotifalso.Infrastructure.csproj", "{8436D4DD-BE6E-4353-BC6B-83E4FBF1558D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotifalso.Infrastructure", "Spotifalso.Infrastructure\Spotifalso.Infrastructure.csproj", "{8436D4DD-BE6E-4353-BC6B-83E4FBF1558D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{1F894661-1BAA-46B2-9AD8-B7A356242FFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotifalso.UnitTests", "Spotifalso.UnitTests\Spotifalso.UnitTests.csproj", "{B98588B5-11A7-4005-9864-AF85F5FFD46E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotifalso.UnitTests", "Spotifalso.UnitTests\Spotifalso.UnitTests.csproj", "{B98588B5-11A7-4005-9864-AF85F5FFD46E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotifalso.IntegrationTests", "Spotifalso.IntegrationTests\Spotifalso.IntegrationTests.csproj", "{AA8331DD-7C36-45CD-864E-1A140A9416B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotifalso.IntegrationTests", "Spotifalso.IntegrationTests\Spotifalso.IntegrationTests.csproj", "{AA8331DD-7C36-45CD-864E-1A140A9416B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
