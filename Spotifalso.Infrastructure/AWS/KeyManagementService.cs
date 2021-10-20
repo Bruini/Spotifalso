@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Spotifalso.Infrastructure.AWS
 {
-    public class Kms : IKms
+    public class KeyManagementService : IKeyManagementService
     {
         private readonly IAmazonKeyManagementService _kmsClient;
         private readonly ILogger _logger;
 
         private const string USER_PASSWORD_KEY = "4072e4d2-117d-4bc8-b489-b7821fe50ddf";
-        public Kms(IAmazonKeyManagementService kmsClient, ILogger<Kms> logger)
+        public KeyManagementService(IAmazonKeyManagementService kmsClient, ILogger<KeyManagementService> logger)
         {
             _kmsClient = kmsClient;
             _logger = logger;

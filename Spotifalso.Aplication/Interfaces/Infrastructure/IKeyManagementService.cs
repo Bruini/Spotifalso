@@ -2,7 +2,7 @@
 
 namespace Spotifalso.Aplication.Interfaces.Infrastructure
 {
-    public interface IKms
+    public interface IKeyManagementService
     {
         Task<string> EncriptUserPassword(string password);
         Task<string> DecriptUserPassword(string password);

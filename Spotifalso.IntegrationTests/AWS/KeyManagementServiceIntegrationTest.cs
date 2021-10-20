@@ -7,21 +7,21 @@ using Xunit;
 
 namespace Spotifalso.IntegrationTest.AWS
 {
-    public class KmsIntegrationTest
+    public class KeyManagementServiceIntegrationTest
     {
         private readonly ServiceCollection _serviceCollection;
         private readonly ServiceProvider _serviceProvider;
-        private readonly IKms _kms;
-        public KmsIntegrationTest()
+        private readonly IKeyManagementService _keyManagementService;
+        public KeyManagementServiceIntegrationTest()
         {
             //TODO Refactor to separete class
             _serviceCollection = new ServiceCollection();
             _serviceCollection.AddLogging();
             _serviceCollection.AddAWSService<IAmazonKeyManagementService>();
-            _serviceCollection.AddScoped<IKms, Kms>();
+            _serviceCollection.AddScoped<IKeyManagementService, KeyManagementService>();
             _serviceProvider = _serviceCollection.BuildServiceProvider();
 
-            _kms = _serviceProvider.GetRequiredService<IKms>();
+            _keyManagementService = _serviceProvider.GetRequiredService<IKeyManagementService>();
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace Spotifalso.IntegrationTest.AWS
         {
             string password = "abc001";
 
-            var encriptedPassword = await _kms.EncriptUserPassword(password);
+            var encriptedPassword = await _keyManagementService.EncriptUserPassword(password);
 
             Assert.NotNull(encriptedPassword);
             Assert.NotEqual(string.Empty, encriptedPassword);
@@ -40,8 +40,8 @@ namespace Spotifalso.IntegrationTest.AWS
         {
             string password = "abc123@xx";
 
-            var encriptedPassword = await _kms.EncriptUserPassword(password);
-            var decriptedPassowrd = await _kms.DecriptUserPassword(encriptedPassword);
+            var encriptedPassword = await _keyManagementService.EncriptUserPassword(password);
+            var decriptedPassowrd = await _keyManagementService.DecriptUserPassword(encriptedPassword);
 
             Assert.NotNull(encriptedPassword);
             Assert.Equal(password, decriptedPassowrd);

@@ -24,22 +24,26 @@ namespace Spotifalso.Core.Models
 
         public void ChangeNickname(string nickname)
         {
-            Nickname = nickname;
+            if (!string.IsNullOrWhiteSpace(nickname) && nickname != this.Nickname)
+                Nickname = nickname;
         }
 
         public void ChangeProfilePhotoId(string profilePhotoId)
         {
-            ProfilePhotoId = profilePhotoId;
+            if (profilePhotoId != this.ProfilePhotoId)
+                ProfilePhotoId = profilePhotoId;
         }
 
         public void ChangeBio(string bio)
         {
-            Bio = bio;
+            if (bio != this.Bio)
+                Bio = bio;
         }
 
         public void ChangePassword(string password)
         {
-            Password = password;
+            if (!string.IsNullOrWhiteSpace(password) && password != this.Password)
+                Password = password;
         }
     }
 }

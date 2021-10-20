@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Spotifalso.Core.Models;
+using Spotifalso.Aplication.Inputs;
 
-namespace Spotifalso.Core.Validators
+namespace Spotifalso.Aplication.Validators
 {
-    public class UserValidator : AbstractValidator<User>
+    public class UserValidator : AbstractValidator<UserInput>
     {
         public UserValidator()
         {
@@ -18,6 +18,14 @@ namespace Spotifalso.Core.Validators
             RuleFor(x => x.Password)
                 .NotEmpty()
                 .WithMessage("Password is required");
+
+            RuleFor(x => x.Bio)
+                .MaximumLength(500)
+                .WithMessage("The maximum length of biography is 500 characters");
+
+            RuleFor(x => x.Role)
+                .NotNull()
+                .WithMessage("Role is required");
         }
     }
 
