@@ -5,6 +5,7 @@ using Spotifalso.Aplication.Interfaces.Infrastructure;
 using Spotifalso.Aplication.Interfaces.Repositories;
 using Spotifalso.Aplication.Interfaces.Services;
 using Spotifalso.Aplication.ViewModels;
+using Spotifalso.Core.Enums;
 using Spotifalso.Core.Exceptions;
 using Spotifalso.Core.Models;
 using System;
@@ -61,9 +62,12 @@ namespace Spotifalso.Aplication.Services
             //TODO validate role
 
             //Encript user password
-            var password = await _keyManagementService.EncriptUserPassword(userInput.Password);
+            var roleExist = Enum.TryParse(userInput.Role, out Roles role);
+            if (!roleExist)
+                throw new RoleNotExistsException();
 
-            var user = new User(userInput.ProfilePhotoId, password, userInput.Role, userInput.Nickname, userInput.Bio);
+            var password = await _keyManagementService.EncriptUserPassword(userInput.Password);
+            var user = new User(userInput.ProfilePhotoId, password, role, userInput.Nickname, userInput.Bio);
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
 

@@ -24,7 +24,7 @@ namespace Spotifalso.Aplication.Validators
                 .WithMessage("The maximum length of biography is 500 characters");
 
             RuleFor(x => x.Role)
-                .NotNull()
+                .NotEmpty()
                 .WithMessage("Role is required");
         }
     }

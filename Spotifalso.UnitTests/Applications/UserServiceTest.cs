@@ -8,6 +8,7 @@ using Spotifalso.Aplication.Services;
 using Spotifalso.Aplication.Validators;
 using Spotifalso.Aplication.ViewModels;
 using Spotifalso.Core.Models;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -45,7 +46,7 @@ namespace Spotifalso.UnitTests.Applications
                 Bio = "Dev",
                 Password = "abc001",
                 ProfilePhotoId = string.Empty,
-                Role = Core.Enums.Roles.Admin
+                Role = "Admin"
             };
 
             _keyManagementServiceMock.Setup(x => x.EncriptUserPassword(It.IsAny<string>())).ReturnsAsync("dGVzdGVhc2Rhc2RzYWRhc2RzYWRhc2Rhc2RzYWRhc3Nzc3Nzc3Nzc3Nzc3Nzc3NzZHNhYWFhYWFhYWFhYWFkc2FhYWFhYWFhYWFhYWE=");
@@ -58,7 +59,7 @@ namespace Spotifalso.UnitTests.Applications
             Assert.Equal(userInput.Nickname, user.Nickname);
             Assert.Equal(userInput.Bio, user.Bio);
             Assert.Equal(userInput.ProfilePhotoId, user.ProfilePhotoId);
-            Assert.Equal(userInput.Role, user.Role);
+            Assert.Equal(userInput.Role, user.Role.ToString()) ;
             _keyManagementServiceMock.Verify(x => x.EncriptUserPassword(userInput.Password), Times.Once);
             _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
             _userRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
