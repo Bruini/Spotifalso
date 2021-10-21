@@ -20,8 +20,8 @@ namespace Spotifalso.Infrastructure.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
                         .HasColumnName("UserID");
 
                     b.Property<string>("Bio")

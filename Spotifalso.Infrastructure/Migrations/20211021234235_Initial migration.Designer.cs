@@ -8,8 +8,8 @@ using Spotifalso.Infrastructure.Data.Config;
 namespace Spotifalso.Infrastructure.Migrations
 {
     [DbContext(typeof(SpotifalsoDBContext))]
-    [Migration("20211021221500_Remove initial admin user")]
-    partial class Removeinitialadminuser
+    [Migration("20211021234235_Initial migration")]
+    partial class Initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,8 +22,8 @@ namespace Spotifalso.Infrastructure.Migrations
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
                         .HasColumnName("UserID");
 
                     b.Property<string>("Bio")
@@ -39,8 +39,7 @@ namespace Spotifalso.Infrastructure.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("text")
                         .HasColumnName("Password");
 
                     b.Property<string>("ProfilePhotoId")
