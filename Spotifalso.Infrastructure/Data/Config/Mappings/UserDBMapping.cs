@@ -16,8 +16,8 @@ namespace Spotifalso.Infrastructure.Data.Config.Mappings
             builder.HasIndex(u => u.Nickname);
 
             builder.Property(u => u.Id).HasColumnName("UserID")
-                .HasColumnType("varchar")
-                .HasMaxLength(50)
+                .HasColumnType("char")
+                .HasMaxLength(36)
                 .IsRequired();
 
             builder.Property(u => u.ProfilePhotoId).HasColumnName("ProfilePhotoId")
@@ -31,8 +31,7 @@ namespace Spotifalso.Infrastructure.Data.Config.Mappings
                 .IsRequired();
 
             builder.Property(u => u.Password).HasColumnName("Password")
-                .HasColumnType("varchar")
-                .HasMaxLength(100)
+                .HasColumnType("text")
                 .IsRequired();
 
             builder.Property(u => u.Bio).HasColumnName("Bio")
