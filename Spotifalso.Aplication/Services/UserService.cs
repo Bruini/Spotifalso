@@ -1,8 +1,10 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Spotifalso.Aplication.Inputs;
 using Spotifalso.Aplication.Interfaces.Infrastructure;
 using Spotifalso.Aplication.Interfaces.Repositories;
 using Spotifalso.Aplication.Interfaces.Services;
+using Spotifalso.Aplication.ViewModels;
 using Spotifalso.Core.Exceptions;
 using Spotifalso.Core.Models;
 using System;
@@ -16,11 +18,13 @@ namespace Spotifalso.Aplication.Services
         private readonly IKeyManagementService _keyManagementService;
         private readonly IUserRepository _userRepository;
         private readonly IValidator<UserInput> _validator;
-        public UserService(IUserRepository userRepository, IKeyManagementService keyManagementService, IValidator<UserInput> validator)
+        private readonly IMapper _mapper;
+        public UserService(IUserRepository userRepository, IKeyManagementService keyManagementService, IValidator<UserInput> validator, IMapper mapper)
         {
             _keyManagementService = keyManagementService;
             _userRepository = userRepository;
             _validator = validator;
+            _mapper = mapper;
         }
 
         public async Task DeleteAsync(Guid id)
@@ -33,22 +37,23 @@ namespace Spotifalso.Aplication.Services
             await _userRepository.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<UserViewModel>> GetAllAsync()
         {
-            return await _userRepository.GetAllAsync();
+            var users = await _userRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<UserViewModel>>(users);
         }
 
-        public async Task<User> GetByIdAsync(Guid id)
+        public async Task<UserViewModel> GetByIdAsync(Guid id)
         {
             var user = await _userRepository.GetByIdAsync(id);
 
             if (user is null)
                 throw new UserNotFoundException(id);
 
-            return user;
+            return _mapper.Map<UserViewModel>(user);
         }
 
-        public async Task<User> InsertAsync(UserInput userInput)
+        public async Task<UserViewModel> InsertAsync(UserInput userInput)
         {
             //Validate input data
             await _validator.ValidateAndThrowAsync(userInput);
@@ -62,10 +67,10 @@ namespace Spotifalso.Aplication.Services
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
 
-            return user;
+            return _mapper.Map<UserViewModel>(user);
         }
 
-        public async Task<User> UpdateAsync(Guid id, UserInput userInput)
+        public async Task<UserViewModel> UpdateAsync(Guid id, UserInput userInput)
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user is null)
@@ -93,7 +98,7 @@ namespace Spotifalso.Aplication.Services
             _userRepository.Update(user);
             await _userRepository.SaveChangesAsync();
 
-            return user;
+            return _mapper.Map<UserViewModel>(user);
         }
     }
 }
