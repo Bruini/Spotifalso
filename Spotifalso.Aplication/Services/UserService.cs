@@ -37,7 +37,6 @@ namespace Spotifalso.Aplication.Services
             _userRepository.Delete(user);
             await _userRepository.SaveChangesAsync();
         }
-
         public async Task<IEnumerable<UserViewModel>> GetAllAsync()
         {
             var users = await _userRepository.GetAllAsync();
@@ -59,13 +58,13 @@ namespace Spotifalso.Aplication.Services
             //Validate input data
             await _validator.ValidateAndThrowAsync(userInput);
 
-            //TODO validate role
-
-            //Encript user password
             var roleExist = Enum.TryParse(userInput.Role, out Roles role);
             if (!roleExist)
                 throw new RoleNotExistsException();
 
+            //TODO validate role Authorization
+
+            //Encript user password       
             var password = await _keyManagementService.EncriptUserPassword(userInput.Password);
             var user = new User(userInput.ProfilePhotoId, password, role, userInput.Nickname, userInput.Bio);
             await _userRepository.AddAsync(user);

@@ -4,6 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Spotifalso.Aplication.Inputs;
+using Spotifalso.Aplication.Interfaces.Services;
+using Spotifalso.Aplication.Services;
 using Spotifalso.Infrastructure.Data.Config;
 using System;
 using System.Collections.Generic;
@@ -18,6 +21,7 @@ namespace Spotifalso.API
         {
             var webHost = CreateHostBuilder(args).Build();
             await ApplyMigrations(webHost.Services);
+            await CreateDefaultAdminUser(webHost.Services);
             await webHost.RunAsync();
 
         }
@@ -40,5 +44,29 @@ namespace Spotifalso.API
             await using SpotifalsoDBContext dbContext = scope.ServiceProvider.GetRequiredService<SpotifalsoDBContext>();
             await dbContext.Database.MigrateAsync();
         }
+
+        private static async Task CreateDefaultAdminUser(IServiceProvider serviceProvider)
+        {        
+            try
+            {
+                var scope = serviceProvider.CreateScope();
+                var userService =  scope.ServiceProvider.GetRequiredService<IUserService>();
+                var users = await userService.GetAllAsync();
+                if (!users.Any(x => x.Nickname.ToLowerInvariant() == "admin" && x.Role == Core.Enums.Roles.Admin))
+                {
+                    var userInput = new UserInput
+                    {
+                        Nickname = "admin",
+                        Role = "Admin",
+                        Password = "admin"
+                    };
+                    await userService.InsertAsync(userInput);
+                }
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }        
+        }        
     }
 }
