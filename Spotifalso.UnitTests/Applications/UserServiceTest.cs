@@ -8,7 +8,8 @@ using Spotifalso.Aplication.Services;
 using Spotifalso.Aplication.Validators;
 using Spotifalso.Aplication.ViewModels;
 using Spotifalso.Core.Models;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -63,6 +64,48 @@ namespace Spotifalso.UnitTests.Applications
             _keyManagementServiceMock.Verify(x => x.EncriptUserPassword(userInput.Password), Times.Once);
             _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
             _userRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task Should_Get_All_Users()
+        {
+            _userRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(GetFakeUsers());
+
+            var userService = new UserService(_userRepositoryMock.Object, _keyManagementServiceMock.Object, _userValidator, _mapper);
+
+            var users = await userService.GetAllAsync();
+
+            Assert.NotEmpty(users);
+            _userRepositoryMock.Verify(x => x.GetAllAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task Should_Get_User_By_Id()
+        {
+            var user = GetFakeUsers().FirstOrDefault();
+
+            _userRepositoryMock.Setup(x => x.GetByIdAsync(user.Id)).ReturnsAsync(user);
+
+            var userService = new UserService(_userRepositoryMock.Object, _keyManagementServiceMock.Object, _userValidator, _mapper);
+
+            var userVm = await userService.GetByIdAsync(user.Id);
+
+            Assert.NotNull(userVm);
+            Assert.Equal(user.Nickname, userVm.Nickname);
+            Assert.Equal(user.Bio, userVm.Bio);
+            Assert.Equal(user.ProfilePhotoId, userVm.ProfilePhotoId);
+            Assert.Equal(user.Role.ToString(), userVm.Role);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(user.Id), Times.Once);
+        }
+
+        private IEnumerable<User> GetFakeUsers()
+        {
+            var users = new List<User>();
+
+            users.Add(new User(string.Empty, "abc", Core.Enums.Roles.Admin, "test_Admin", string.Empty));
+            users.Add(new User(string.Empty, "def", Core.Enums.Roles.Subscriber, "test_Subscriber", string.Empty));
+
+            return users;
         }
     }
 }

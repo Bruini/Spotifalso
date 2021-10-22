@@ -7,7 +7,7 @@ namespace Spotifalso.Aplication.ViewModels
     {
         public Guid Id { get;  set; }
         public string ProfilePhotoId { get; set; }
-        public Roles Role { get; set; }
+        public string Role { get; set; }
         public string Nickname { get; set; }
         public string Bio { get; set; }
     }

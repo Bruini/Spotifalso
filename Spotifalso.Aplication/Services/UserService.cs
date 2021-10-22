@@ -57,12 +57,12 @@ namespace Spotifalso.Aplication.Services
         {
             //Validate input data
             await _validator.ValidateAndThrowAsync(userInput);
-
+            
             var roleExist = Enum.TryParse(userInput.Role, out Roles role);
             if (!roleExist)
                 throw new RoleNotExistsException();
 
-            //TODO validate role Authorization
+            //TODO validate role Authorization from token
 
             //Encript user password       
             var password = await _keyManagementService.EncriptUserPassword(userInput.Password);
@@ -82,7 +82,7 @@ namespace Spotifalso.Aplication.Services
             //Validate input data
             await _validator.ValidateAndThrowAsync(userInput);
 
-            //TODO validate role
+            //TODO validate role Authorization from token
 
             if (!string.IsNullOrWhiteSpace(userInput.Password))
             {

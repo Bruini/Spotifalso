@@ -1,15 +1,13 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Spotifalso.Aplication.Inputs;
 using Spotifalso.Aplication.Interfaces.Services;
-using Spotifalso.Aplication.Services;
+using Spotifalso.Core.Enums;
 using Spotifalso.Infrastructure.Data.Config;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -52,7 +50,7 @@ namespace Spotifalso.API
                 var scope = serviceProvider.CreateScope();
                 var userService =  scope.ServiceProvider.GetRequiredService<IUserService>();
                 var users = await userService.GetAllAsync();
-                if (!users.Any(x => x.Nickname.ToLowerInvariant() == "admin" && x.Role == Core.Enums.Roles.Admin))
+                if (!users.Any(x => x.Nickname.ToLowerInvariant() == "admin" && (Roles)Enum.Parse(typeof(Roles), x.Role) == Roles.Admin))
                 {
                     var userInput = new UserInput
                     {
