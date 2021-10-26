@@ -16,8 +16,8 @@ namespace Spotifalso.Infrastructure.Data.Config.Mappings
             builder.HasIndex(u => u.Nickname);
 
             builder.Property(u => u.Id).HasColumnName("UserID")
-                .HasColumnType("varchar")
-                .HasMaxLength(100)
+                .HasColumnType("char")
+                .HasMaxLength(36)
                 .IsRequired();
 
             builder.Property(u => u.ProfilePhotoId).HasColumnName("ProfilePhotoId")
@@ -41,12 +41,11 @@ namespace Spotifalso.Infrastructure.Data.Config.Mappings
 
             builder.Property(u => u.Role).HasColumnName("Role")
                 .HasColumnType("varchar")
-                .HasMaxLength(100)
+                .HasMaxLength(20)
                 .HasConversion(
                     r => r.ToString(),
                     r => (Roles)Enum.Parse(typeof(Roles), r))
                 .IsRequired();
-
 
         }
     }
