@@ -15,9 +15,8 @@ namespace Spotifalso.Infrastructure.Data.Config.Mappings
             builder.HasKey(u => u.Id);
             builder.HasIndex(u => u.Nickname);
 
-            builder.Property(u => u.Id).HasColumnName("UserID")
-                .HasColumnType("char")
-                .HasMaxLength(36)
+            builder.Property(u => u.Id)
+                .HasColumnName("UserID")
                 .IsRequired();
 
             builder.Property(u => u.ProfilePhotoId).HasColumnName("ProfilePhotoId")
