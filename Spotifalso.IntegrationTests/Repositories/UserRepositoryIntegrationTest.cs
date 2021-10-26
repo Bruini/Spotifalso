@@ -29,7 +29,7 @@ namespace Spotifalso.IntegrationTests.Repositories
             Assert.NotEqual(Guid.Empty, userFromDB.Id);
             Assert.Equal(user.ProfilePhotoId, userFromDB.ProfilePhotoId);
             Assert.Equal(user.Password, userFromDB.Password);
-            Assert.Equal(user.Password, userFromDB.Password);
+            Assert.Equal(user.Role, userFromDB.Role);
             Assert.Equal(user.Nickname, userFromDB.Nickname);
             Assert.Equal(user.Bio, userFromDB.Bio);
         }

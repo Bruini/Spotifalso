@@ -55,7 +55,7 @@ namespace Spotifalso.API
                     var userInput = new UserInput
                     {
                         Nickname = "admin",
-                        Role = "Admin",
+                        Role = Roles.Admin.ToString(),
                         Password = "admin"
                     };
                     await userService.InsertAsync(userInput);

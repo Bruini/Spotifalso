@@ -1,5 +1,4 @@
-﻿using Spotifalso.Core.Enums;
-using System;
+﻿using System;
 
 namespace Spotifalso.Aplication.ViewModels
 {
