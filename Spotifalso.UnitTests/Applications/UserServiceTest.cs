@@ -7,7 +7,9 @@ using Spotifalso.Aplication.Mapping;
 using Spotifalso.Aplication.Services;
 using Spotifalso.Aplication.Validators;
 using Spotifalso.Aplication.ViewModels;
+using Spotifalso.Core.Exceptions;
 using Spotifalso.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -60,9 +62,42 @@ namespace Spotifalso.UnitTests.Applications
             Assert.Equal(userInput.Nickname, user.Nickname);
             Assert.Equal(userInput.Bio, user.Bio);
             Assert.Equal(userInput.ProfilePhotoId, user.ProfilePhotoId);
-            Assert.Equal(userInput.Role, user.Role.ToString()) ;
+            Assert.Equal(userInput.Role, user.Role);
             _keyManagementServiceMock.Verify(x => x.EncriptUserPassword(userInput.Password), Times.Once);
             _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
+            _userRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task Should_Update_User()
+        {
+            var userId = Guid.NewGuid();
+            var userInput = new UserInput
+            {
+                Nickname = "Pedro",
+                Bio = "Dev",
+                Password = "abc001",
+                ProfilePhotoId = string.Empty,
+                Role = "Admin"
+            };
+
+            _userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(GetFakeUsers().FirstOrDefault());
+
+            _keyManagementServiceMock.Setup(x => x.DecriptUserPassword(It.IsAny<string>())).ReturnsAsync("xpto99");
+            _keyManagementServiceMock.Setup(x => x.EncriptUserPassword(It.IsAny<string>())).ReturnsAsync("dGVzdGVhc2Rhc2RzYWRhc2RzYWRhc2Rhc2RzYWRhc3Nzc3Nzc3Nzc3Nzc3Nzc3NzZHNhYWFhYWFhYWFhYWFkc2FhYWFhYWFhYWFhYWE=");
+
+            var userService = new UserService(_userRepositoryMock.Object, _keyManagementServiceMock.Object, _userValidator, _mapper);
+            var user = await userService.UpdateAsync(userId, userInput);
+
+            Assert.NotNull(user);
+            Assert.IsType<UserViewModel>(user);
+            Assert.Equal(userInput.Nickname, user.Nickname);
+            Assert.Equal(userInput.Bio, user.Bio);
+            Assert.Equal(userInput.ProfilePhotoId, user.ProfilePhotoId);
+            Assert.Equal(userInput.Role, user.Role);
+            _keyManagementServiceMock.Verify(x => x.DecriptUserPassword(It.IsAny<string>()), Times.Once);
+            _keyManagementServiceMock.Verify(x => x.EncriptUserPassword(It.IsAny<string>()), Times.Once);
+            _userRepositoryMock.Verify(x => x.Update(It.IsAny<User>()), Times.Once);
             _userRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
         }
 
@@ -96,6 +131,36 @@ namespace Spotifalso.UnitTests.Applications
             Assert.Equal(user.ProfilePhotoId, userVm.ProfilePhotoId);
             Assert.Equal(user.Role.ToString(), userVm.Role);
             _userRepositoryMock.Verify(x => x.GetByIdAsync(user.Id), Times.Once);
+        }
+
+        [Fact]
+        public async Task Should_Delete_User_By_Id()
+        {
+            var user = GetFakeUsers().FirstOrDefault();
+
+            _userRepositoryMock.Setup(x => x.GetByIdAsync(user.Id)).ReturnsAsync(user);
+
+            var userService = new UserService(_userRepositoryMock.Object, _keyManagementServiceMock.Object, _userValidator, _mapper);
+
+            await userService.DeleteAsync(user.Id);
+
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(user.Id), Times.Once);
+            _userRepositoryMock.Verify(x => x.Delete(user), Times.Once);
+            _userRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task Should_Delete_User_By_Id_Expected_UserNotFoundException()
+        {
+            var user = GetFakeUsers().FirstOrDefault();
+            var userService = new UserService(_userRepositoryMock.Object, _keyManagementServiceMock.Object, _userValidator, _mapper);
+
+            var ex = await Assert.ThrowsAsync<UserNotFoundException>(() => userService.DeleteAsync(user.Id));
+
+            Assert.Equal($"The User with the identifier {user.Id} was not found.", ex.Message);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(user.Id), Times.Once);
+            _userRepositoryMock.Verify(x => x.Delete(user), Times.Never);
+            _userRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Never);
         }
 
         private IEnumerable<User> GetFakeUsers()
