@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Spotifalso.Core.Exceptions;
 using Spotifalso.Core.Exceptions.Base;
@@ -34,6 +35,7 @@ namespace Spotifalso.API.Middlewares
             {
                 NotFoundException => StatusCodes.Status404NotFound,
                 InvalidException => StatusCodes.Status400BadRequest,
+                ValidationException => StatusCodes.Status400BadRequest,
                 _ => StatusCodes.Status500InternalServerError
             };
             var response = new
