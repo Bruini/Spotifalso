@@ -105,6 +105,7 @@ namespace Spotifalso.API
             services.AddScoped<IKeyManagementService, KeyManagementService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             #endregion
 

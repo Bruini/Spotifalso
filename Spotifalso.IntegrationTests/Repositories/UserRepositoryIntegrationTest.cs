@@ -104,7 +104,7 @@ namespace Spotifalso.IntegrationTests.Repositories
         }
 
         [Fact]
-        public async Task Should_Get_By_NickName_And_Password()
+        public async Task Should_Get_By_NickName()
         {
             var userRepository = new UserRepository(_fixture.Context);
             var user = new User(string.Empty, "abc001", Core.Enums.Roles.Admin, "Admin", "Admin bio");
@@ -112,7 +112,7 @@ namespace Spotifalso.IntegrationTests.Repositories
             await userRepository.AddAsync(user);
             await userRepository.SaveChangesAsync();
 
-            var userFromDB = await userRepository.GetByNickNameAndPassword("Admin", "abc001");
+            var userFromDB = await userRepository.GetByNickName("Admin");
 
             Assert.NotNull(userFromDB);
             Assert.Equal(user.ProfilePhotoId, userFromDB.ProfilePhotoId);

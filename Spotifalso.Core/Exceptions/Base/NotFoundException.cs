@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Spotifalso.Core.Exceptions
+namespace Spotifalso.Core.Exceptions.Base
 {
     public class NotFoundException : Exception
     {
