@@ -103,6 +103,25 @@ namespace Spotifalso.IntegrationTests.Repositories
             Assert.Equal(2, users.ToList().Count);
         }
 
+        [Fact]
+        public async Task Should_Get_By_NickName_And_Password()
+        {
+            var userRepository = new UserRepository(_fixture.Context);
+            var user = new User(string.Empty, "abc001", Core.Enums.Roles.Admin, "Admin", "Admin bio");
+
+            await userRepository.AddAsync(user);
+            await userRepository.SaveChangesAsync();
+
+            var userFromDB = await userRepository.GetByNickNameAndPassword("Admin", "abc001");
+
+            Assert.NotNull(userFromDB);
+            Assert.Equal(user.ProfilePhotoId, userFromDB.ProfilePhotoId);
+            Assert.Equal(user.Password, userFromDB.Password);
+            Assert.Equal(user.Role, userFromDB.Role);
+            Assert.Equal(user.Nickname, userFromDB.Nickname);
+            Assert.Equal(user.Bio, userFromDB.Bio);
+        }
+
 
     }
 }

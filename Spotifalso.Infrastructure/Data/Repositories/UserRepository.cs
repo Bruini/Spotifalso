@@ -37,6 +37,11 @@ namespace Spotifalso.Infrastructure.Data.Repositories
             return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
 
+        public async Task<User> GetByNickNameAndPassword(string nickname, string password)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Nickname == nickname && u.Password == password);
+        }
+
         public User Update(User user)
         {
             _context.Update(user);

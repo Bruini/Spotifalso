@@ -10,6 +10,7 @@ namespace Spotifalso.Aplication.Interfaces.Repositories
         Task<IEnumerable<User>> GetAllAsync();
         Task<User> GetByIdAsync(Guid id);
         Task<User> AddAsync(User user);
+        Task<User> GetByNickNameAndPassword(string nickname, string password);
         User Update(User user);
         void Delete(User user);
         Task SaveChangesAsync();
