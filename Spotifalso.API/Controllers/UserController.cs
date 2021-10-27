@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Spotifalso.Aplication.Inputs;
 using Spotifalso.Aplication.Interfaces.Services;
 using Spotifalso.Aplication.ViewModels;
@@ -10,6 +11,7 @@ namespace Spotifalso.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
