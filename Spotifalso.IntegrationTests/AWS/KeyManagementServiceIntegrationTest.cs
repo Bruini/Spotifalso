@@ -1,27 +1,19 @@
-﻿using Amazon.KeyManagementService;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Spotifalso.Aplication.Interfaces.Infrastructure;
-using Spotifalso.Infrastructure.AWS;
+using Spotifalso.IntegrationTests.Fixtures;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Spotifalso.IntegrationTest.AWS
 {
-    public class KeyManagementServiceIntegrationTest
+    public class KeyManagementServiceIntegrationTest: IClassFixture<BaseServicesTestFixture>
     {
-        private readonly ServiceCollection _serviceCollection;
-        private readonly ServiceProvider _serviceProvider;
+        private readonly BaseServicesTestFixture _fixture;
         private readonly IKeyManagementService _keyManagementService;
-        public KeyManagementServiceIntegrationTest()
+        public KeyManagementServiceIntegrationTest(BaseServicesTestFixture fixture)
         {
-            //TODO Refactor to separete class
-            _serviceCollection = new ServiceCollection();
-            _serviceCollection.AddLogging();
-            _serviceCollection.AddAWSService<IAmazonKeyManagementService>();
-            _serviceCollection.AddScoped<IKeyManagementService, KeyManagementService>();
-            _serviceProvider = _serviceCollection.BuildServiceProvider();
-
-            _keyManagementService = _serviceProvider.GetRequiredService<IKeyManagementService>();
+            _fixture = fixture;
+            _keyManagementService = _fixture.ServiceProvider.GetRequiredService<IKeyManagementService>();
         }
 
         [Fact]
