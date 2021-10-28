@@ -27,4 +27,10 @@
     <ProjectReference Include="..\Spotifalso.Infrastructure\Spotifalso.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
