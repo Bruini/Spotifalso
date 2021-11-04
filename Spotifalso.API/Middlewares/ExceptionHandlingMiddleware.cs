@@ -36,6 +36,7 @@ namespace Spotifalso.API.Middlewares
                 NotFoundException => StatusCodes.Status404NotFound,
                 InvalidException => StatusCodes.Status400BadRequest,
                 ValidationException => StatusCodes.Status400BadRequest,
+                ForbiddenException => StatusCodes.Status403Forbidden,
                 _ => StatusCodes.Status500InternalServerError
             };
             var response = new

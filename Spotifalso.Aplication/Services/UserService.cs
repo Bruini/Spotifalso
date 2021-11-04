@@ -10,6 +10,7 @@ using Spotifalso.Core.Exceptions;
 using Spotifalso.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Spotifalso.Aplication.Services
@@ -53,16 +54,22 @@ namespace Spotifalso.Aplication.Services
             return _mapper.Map<UserViewModel>(user);
         }
 
-        public async Task<UserViewModel> InsertAsync(UserInput userInput)
+        public async Task<UserViewModel> InsertAsync(UserInput userInput, ClaimsPrincipal userClaims)
         {
             //Validate input data
             await _validator.ValidateAndThrowAsync(userInput);
-            
+
+            //Validate role exists
             var roleExist = Enum.TryParse(userInput.Role, out Roles role);
             if (!roleExist)
                 throw new RoleNotExistsException();
 
-            //TODO validate role Authorization from token
+            //Validate role Authorization from token claim
+            if (userClaims.Identity.IsAuthenticated == false && role == Roles.Admin)
+                throw new RoleForbiddenException();
+
+            if (role == Roles.Admin && !userClaims.IsInRole(Roles.Admin.ToString()))
+                throw new RoleForbiddenException();
 
             //Encript user password       
             var password = await _keyManagementService.EncriptUserPassword(userInput.Password);
@@ -87,17 +94,17 @@ namespace Spotifalso.Aplication.Services
             if (!string.IsNullOrWhiteSpace(userInput.Password))
             {
                 var oldPassword = await _keyManagementService.DecriptUserPassword(user.Password);
-                if(oldPassword != userInput.Password)
+                if (oldPassword != userInput.Password)
                 {
                     var newPassword = await _keyManagementService.EncriptUserPassword(user.Password);
                     user.ChangePassword(newPassword);
-                }             
+                }
             }
 
             user.ChangeBio(userInput.Bio);
             user.ChangeNickname(userInput.Nickname);
             user.ChangeProfilePhotoId(userInput.ProfilePhotoId);
-          
+
             _userRepository.Update(user);
             await _userRepository.SaveChangesAsync();
 

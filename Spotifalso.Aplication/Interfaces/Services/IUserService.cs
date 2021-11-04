@@ -3,6 +3,7 @@ using Spotifalso.Aplication.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Spotifalso.Aplication.Interfaces.Services
 {
@@ -10,7 +11,7 @@ namespace Spotifalso.Aplication.Interfaces.Services
     {
         Task<IEnumerable<UserViewModel>> GetAllAsync();
         Task<UserViewModel> GetByIdAsync(Guid id);
-        Task<UserViewModel> InsertAsync(UserInput userInput);
+        Task<UserViewModel> InsertAsync(UserInput userInput, ClaimsPrincipal UserClaims);
         Task<UserViewModel> UpdateAsync(Guid id, UserInput userInput);
         Task DeleteAsync(Guid id);
     }

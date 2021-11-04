@@ -8,7 +8,9 @@ using Spotifalso.Aplication.Interfaces.Services;
 using Spotifalso.Core.Enums;
 using Spotifalso.Infrastructure.Data.Config;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Spotifalso.API
@@ -44,11 +46,11 @@ namespace Spotifalso.API
         }
 
         private static async Task CreateDefaultAdminUser(IServiceProvider serviceProvider)
-        {        
+        {
             try
             {
                 var scope = serviceProvider.CreateScope();
-                var userService =  scope.ServiceProvider.GetRequiredService<IUserService>();
+                var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
                 var users = await userService.GetAllAsync();
                 if (!users.Any(x => x.Nickname.ToLowerInvariant() == "admin" && (Roles)Enum.Parse(typeof(Roles), x.Role) == Roles.Admin))
                 {
@@ -58,13 +60,21 @@ namespace Spotifalso.API
                         Role = Roles.Admin.ToString(),
                         Password = "admin"
                     };
-                    await userService.InsertAsync(userInput);
+
+                    var identities = new ClaimsIdentity(new Claim[]
+                                    {
+                                            new Claim(ClaimTypes.Name, userInput.Nickname),
+                                            new Claim(ClaimTypes.Role, userInput.Role.ToString()),
+                                    }, "JWT", ClaimTypes.Name, ClaimTypes.Role);
+                    var claim = new ClaimsPrincipal(identities);
+
+                    await userService.InsertAsync(userInput, claim);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
-            }        
-        }        
+            }
+        }
     }
 }

@@ -33,9 +33,10 @@ namespace Spotifalso.API.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<UserViewModel> Post([FromBody] UserInput userInput)
         {
-            return await _userService.InsertAsync(userInput);
+            return await _userService.InsertAsync(userInput, User);
         }
 
         [HttpPut("{id}")]
