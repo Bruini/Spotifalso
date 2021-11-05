@@ -65,7 +65,11 @@ namespace Spotifalso.API
                                     {
                                             new Claim(ClaimTypes.Name, userInput.Nickname),
                                             new Claim(ClaimTypes.Role, userInput.Role.ToString()),
-                                    }, "JWT", ClaimTypes.Name, ClaimTypes.Role);
+                                    },
+                                    "JWT",
+                                    ClaimTypes.Name,
+                                    ClaimTypes.Role);
+
                     var claim = new ClaimsPrincipal(identities);
 
                     await userService.InsertAsync(userInput, claim);

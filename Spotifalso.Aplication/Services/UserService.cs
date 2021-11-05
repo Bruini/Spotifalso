@@ -59,6 +59,19 @@ namespace Spotifalso.Aplication.Services
             //Validate input data
             await _validator.ValidateAndThrowAsync(userInput);
 
+            var role = ValidateAndComposeRole(userInput, userClaims);
+
+            //Encript user password       
+            var password = await _keyManagementService.EncriptUserPassword(userInput.Password);
+            var user = new User(userInput.ProfilePhotoId, password, role, userInput.Nickname, userInput.Bio);
+            await _userRepository.AddAsync(user);
+            await _userRepository.SaveChangesAsync();
+
+            return _mapper.Map<UserViewModel>(user);
+        }
+
+        private Roles ValidateAndComposeRole(UserInput userInput, ClaimsPrincipal userClaims)
+        {
             //Validate role exists
             var roleExist = Enum.TryParse(userInput.Role, out Roles role);
             if (!roleExist)
@@ -71,13 +84,7 @@ namespace Spotifalso.Aplication.Services
             if (role == Roles.Admin && !userClaims.IsInRole(Roles.Admin.ToString()))
                 throw new RoleForbiddenException();
 
-            //Encript user password       
-            var password = await _keyManagementService.EncriptUserPassword(userInput.Password);
-            var user = new User(userInput.ProfilePhotoId, password, role, userInput.Nickname, userInput.Bio);
-            await _userRepository.AddAsync(user);
-            await _userRepository.SaveChangesAsync();
-
-            return _mapper.Map<UserViewModel>(user);
+            return role;
         }
 
         public async Task<UserViewModel> UpdateAsync(Guid id, UserInput userInput)
@@ -88,8 +95,6 @@ namespace Spotifalso.Aplication.Services
 
             //Validate input data
             await _validator.ValidateAndThrowAsync(userInput);
-
-            //TODO validate role Authorization from token
 
             if (!string.IsNullOrWhiteSpace(userInput.Password))
             {

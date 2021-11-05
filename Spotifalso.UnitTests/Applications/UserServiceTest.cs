@@ -12,6 +12,7 @@ using Spotifalso.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -52,10 +53,21 @@ namespace Spotifalso.UnitTests.Applications
                 Role = "Admin"
             };
 
+            var identities = new ClaimsIdentity(new Claim[]
+                                   {
+                                            new Claim(ClaimTypes.Name, userInput.Nickname),
+                                            new Claim(ClaimTypes.Role, userInput.Role.ToString()),
+                                   },
+                                   "JWT",
+                                   ClaimTypes.Name, 
+                                   ClaimTypes.Role);
+
+            var claim = new ClaimsPrincipal(identities);
+
             _keyManagementServiceMock.Setup(x => x.EncriptUserPassword(It.IsAny<string>())).ReturnsAsync("dGVzdGVhc2Rhc2RzYWRhc2RzYWRhc2Rhc2RzYWRhc3Nzc3Nzc3Nzc3Nzc3Nzc3NzZHNhYWFhYWFhYWFhYWFkc2FhYWFhYWFhYWFhYWE=");
 
             var userService = new UserService(_userRepositoryMock.Object, _keyManagementServiceMock.Object, _userValidator, _mapper);         
-            var user = await userService.InsertAsync(userInput);
+            var user = await userService.InsertAsync(userInput, claim);
 
             Assert.NotNull(user);
             Assert.IsType<UserViewModel>(user);
