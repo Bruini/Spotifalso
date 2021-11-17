@@ -58,13 +58,46 @@ namespace Spotifalso.Aplication.Services
         {
             //Validate input data
             await _validator.ValidateAndThrowAsync(userInput);
-
             var role = ValidateAndComposeRole(userInput, userClaims);
+            await ValidateUserExists(userInput);
 
             //Encript user password       
             var password = await _keyManagementService.EncriptUserPassword(userInput.Password);
             var user = new User(userInput.ProfilePhotoId, password, role, userInput.Nickname, userInput.Bio);
             await _userRepository.AddAsync(user);
+            await _userRepository.SaveChangesAsync();
+
+            return _mapper.Map<UserViewModel>(user);
+        }
+
+        public async Task<UserViewModel> UpdateAsync(Guid id, UserInput userInput)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user is null)
+                throw new UserNotFoundException(id);
+
+            //Validate input data
+            await _validator.ValidateAndThrowAsync(userInput);
+
+            if (userInput.Nickname.ToLowerInvariant() != user.Nickname.ToLowerInvariant())
+            {
+                await ValidateUserExists(userInput);
+            }
+
+            if (!string.IsNullOrWhiteSpace(userInput.Password))
+            {
+                var oldPassword = await _keyManagementService.DecriptUserPassword(user.Password);
+                if (oldPassword != userInput.Password)
+                {
+                    var newPassword = await _keyManagementService.EncriptUserPassword(user.Password);
+                    user.ChangePassword(newPassword);
+                }
+            }
+            user.ChangeBio(userInput.Bio);
+            user.ChangeNickname(userInput.Nickname);
+            user.ChangeProfilePhotoId(userInput.ProfilePhotoId);
+
+            _userRepository.Update(user);
             await _userRepository.SaveChangesAsync();
 
             return _mapper.Map<UserViewModel>(user);
@@ -87,33 +120,12 @@ namespace Spotifalso.Aplication.Services
             return role;
         }
 
-        public async Task<UserViewModel> UpdateAsync(Guid id, UserInput userInput)
+        private async Task ValidateUserExists(UserInput userInput)
         {
-            var user = await _userRepository.GetByIdAsync(id);
-            if (user is null)
-                throw new UserNotFoundException(id);
-
-            //Validate input data
-            await _validator.ValidateAndThrowAsync(userInput);
-
-            if (!string.IsNullOrWhiteSpace(userInput.Password))
+            if (await this._userRepository.UserExist(userInput.Nickname))
             {
-                var oldPassword = await _keyManagementService.DecriptUserPassword(user.Password);
-                if (oldPassword != userInput.Password)
-                {
-                    var newPassword = await _keyManagementService.EncriptUserPassword(user.Password);
-                    user.ChangePassword(newPassword);
-                }
+                throw new UserAlreadyExistsException();
             }
-
-            user.ChangeBio(userInput.Bio);
-            user.ChangeNickname(userInput.Nickname);
-            user.ChangeProfilePhotoId(userInput.ProfilePhotoId);
-
-            _userRepository.Update(user);
-            await _userRepository.SaveChangesAsync();
-
-            return _mapper.Map<UserViewModel>(user);
         }
     }
 }

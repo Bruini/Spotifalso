@@ -59,14 +59,14 @@ namespace Spotifalso.UnitTests.Applications
                                             new Claim(ClaimTypes.Role, userInput.Role.ToString()),
                                    },
                                    "JWT",
-                                   ClaimTypes.Name, 
+                                   ClaimTypes.Name,
                                    ClaimTypes.Role);
 
             var claim = new ClaimsPrincipal(identities);
 
             _keyManagementServiceMock.Setup(x => x.EncriptUserPassword(It.IsAny<string>())).ReturnsAsync("dGVzdGVhc2Rhc2RzYWRhc2RzYWRhc2Rhc2RzYWRhc3Nzc3Nzc3Nzc3Nzc3Nzc3NzZHNhYWFhYWFhYWFhYWFkc2FhYWFhYWFhYWFhYWE=");
 
-            var userService = new UserService(_userRepositoryMock.Object, _keyManagementServiceMock.Object, _userValidator, _mapper);         
+            var userService = new UserService(_userRepositoryMock.Object, _keyManagementServiceMock.Object, _userValidator, _mapper);
             var user = await userService.InsertAsync(userInput, claim);
 
             Assert.NotNull(user);
@@ -78,6 +78,41 @@ namespace Spotifalso.UnitTests.Applications
             _keyManagementServiceMock.Verify(x => x.EncriptUserPassword(userInput.Password), Times.Once);
             _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
             _userRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task Should_Insert_User_Expected_UserAlreadyExistsException()
+        {
+            var userInput = new UserInput
+            {
+                Nickname = "Pedro",
+                Bio = "Dev",
+                Password = "abc001",
+                ProfilePhotoId = string.Empty,
+                Role = "Admin"
+            };
+
+            var identities = new ClaimsIdentity(new Claim[]
+                                   {
+                                            new Claim(ClaimTypes.Name, userInput.Nickname),
+                                            new Claim(ClaimTypes.Role, userInput.Role.ToString()),
+                                   },
+                                   "JWT",
+                                   ClaimTypes.Name,
+                                   ClaimTypes.Role);
+
+            var claim = new ClaimsPrincipal(identities);
+
+            _userRepositoryMock.Setup(x => x.UserExist(It.IsAny<string>())).ReturnsAsync(true);
+
+            var userService = new UserService(_userRepositoryMock.Object, _keyManagementServiceMock.Object, _userValidator, _mapper);
+
+            var ex = await Assert.ThrowsAsync<UserAlreadyExistsException>(() => userService.InsertAsync(userInput, claim));
+
+            Assert.Equal($"User name already exists.", ex.Message);
+            _keyManagementServiceMock.Verify(x => x.EncriptUserPassword(userInput.Password), Times.Never);
+            _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Never);
+            _userRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Never);
         }
 
         [Fact]
@@ -109,8 +144,37 @@ namespace Spotifalso.UnitTests.Applications
             Assert.Equal(userInput.Role, user.Role);
             _keyManagementServiceMock.Verify(x => x.DecriptUserPassword(It.IsAny<string>()), Times.Once);
             _keyManagementServiceMock.Verify(x => x.EncriptUserPassword(It.IsAny<string>()), Times.Once);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
             _userRepositoryMock.Verify(x => x.Update(It.IsAny<User>()), Times.Once);
             _userRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task Should_Update_User_Expected_UserAlreadyExistsException()
+        {
+            var userId = Guid.NewGuid();
+            var userInput = new UserInput
+            {
+                Nickname = "Pedro",
+                Bio = "Dev",
+                Password = "abc001",
+                ProfilePhotoId = string.Empty,
+                Role = "Admin"
+            };
+
+            _userRepositoryMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(GetFakeUsers().FirstOrDefault());
+            _userRepositoryMock.Setup(x => x.UserExist(It.IsAny<string>())).ReturnsAsync(true);
+
+            var userService = new UserService(_userRepositoryMock.Object, _keyManagementServiceMock.Object, _userValidator, _mapper);
+
+            var ex = await Assert.ThrowsAsync<UserAlreadyExistsException>(() => userService.UpdateAsync(userId, userInput));
+
+            Assert.Equal($"User name already exists.", ex.Message);
+            _keyManagementServiceMock.Verify(x => x.DecriptUserPassword(It.IsAny<string>()), Times.Never);
+            _keyManagementServiceMock.Verify(x => x.EncriptUserPassword(It.IsAny<string>()), Times.Never);
+            _userRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
+            _userRepositoryMock.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+            _userRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Never);
         }
 
         [Fact]
