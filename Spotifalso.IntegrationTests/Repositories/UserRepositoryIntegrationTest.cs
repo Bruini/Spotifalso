@@ -122,7 +122,25 @@ namespace Spotifalso.IntegrationTests.Repositories
             Assert.Equal(user.Bio, userFromDB.Bio);
         }
 
+        [Fact]
+        public async Task Should_UserExist_Returns_True()
+        {
+            var userRepository = new UserRepository(_fixture.Context);
+            var user = new User(string.Empty, "abc001", Core.Enums.Roles.Admin, "Admin", "Admin bio");
 
+            await userRepository.AddAsync(user);
+            await userRepository.SaveChangesAsync();
+
+            Assert.True(await userRepository.UserExist("Admin"));
+        }
+
+        [Fact]
+        public async Task Should_UserExist_Returns_False()
+        {
+            var userRepository = new UserRepository(_fixture.Context);
+
+            Assert.False(await userRepository.UserExist("Xpto"));
+        }
     }
 }
 

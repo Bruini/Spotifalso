@@ -13,6 +13,7 @@ namespace Spotifalso.Aplication.Interfaces.Repositories
         Task<User> GetByNickName(string nickname);
         User Update(User user);
         void Delete(User user);
+        Task<bool> UserExist(string nickname);
         Task SaveChangesAsync();
     }
 }

@@ -47,6 +47,12 @@ namespace Spotifalso.Infrastructure.Data.Repositories
             _context.Update(user);
             return user;
         }
+
+        public async Task<bool> UserExist(string nickname)
+        {
+           return await _context.Users.AnyAsync(u => u.Nickname == nickname);
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
