@@ -14,7 +14,7 @@ namespace Spotifalso.Infrastructure.AWS
         private readonly IAmazonKeyManagementService _kmsClient;
         private readonly ILogger _logger;
 
-        private const string USER_PASSWORD_KEY = "4072e4d2-117d-4bc8-b489-b7821fe50ddf";
+        private const string USER_PASSWORD_ARN = "arn:aws:kms:us-east-1:817086899180:key/4072e4d2-117d-4bc8-b489-b7821fe50ddf";
         public KeyManagementService(IAmazonKeyManagementService kmsClient, ILogger<KeyManagementService> logger)
         {
             _kmsClient = kmsClient;
@@ -25,14 +25,12 @@ namespace Spotifalso.Infrastructure.AWS
         {
             try
             {
-                var userPasswordKey = await GetKey(USER_PASSWORD_KEY);
-
                 byte[] passwordByteArray = Encoding.ASCII.GetBytes(password);
                 var passwordMemorystream = new MemoryStream(passwordByteArray);
 
                 EncryptRequest encryptRequest = new EncryptRequest()
                 {
-                    KeyId = userPasswordKey.KeyMetadata.KeyId,
+                    KeyId = USER_PASSWORD_ARN,
                     Plaintext = passwordMemorystream,
                     EncryptionAlgorithm = EncryptionAlgorithmSpec.SYMMETRIC_DEFAULT
                 };
@@ -60,15 +58,13 @@ namespace Spotifalso.Infrastructure.AWS
         {
             try
             {
-                var userPasswordKey = await GetKey(USER_PASSWORD_KEY);
-
                 var passwordFromBase64 = Convert.FromBase64String(password);
                 var passwordMemoryStream = new MemoryStream(passwordFromBase64);
 
                 var decryptRequest = new DecryptRequest()
                 {
                     CiphertextBlob = passwordMemoryStream,
-                    KeyId = userPasswordKey.KeyMetadata.KeyId,
+                    KeyId = USER_PASSWORD_ARN,
                     EncryptionAlgorithm = EncryptionAlgorithmSpec.SYMMETRIC_DEFAULT
                 };
 
@@ -88,8 +84,5 @@ namespace Spotifalso.Infrastructure.AWS
                 throw;
             }
         }
-
-        private async Task<ListKeysResponse> ListKeys() => await _kmsClient.ListKeysAsync(new ListKeysRequest());
-        private async Task<DescribeKeyResponse> GetKey(string keyId) => await _kmsClient.DescribeKeyAsync(new DescribeKeyRequest { KeyId = keyId });
     }
 }
