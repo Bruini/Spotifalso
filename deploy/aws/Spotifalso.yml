@@ -1,0 +1,103 @@
+AWSTemplateFormatVersion: 2010-09-09
+Metadata:
+  'AWS::CloudFormation::Designer':
+    e577d6ce-f190-4d76-9c48-af1fcf83407c:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 330
+        'y': 30
+      z: 1
+      embeds: []
+    7247797d-4922-41a9-925a-c7442ba8fe25:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 60
+        'y': 90
+      z: 1
+      embeds: []
+    6dd5d886-41a8-4deb-8972-76ee470232b3:
+      source:
+        id: e577d6ce-f190-4d76-9c48-af1fcf83407c
+      target:
+        id: 7247797d-4922-41a9-925a-c7442ba8fe25
+      z: 1
+Resources:
+  UserPassword:
+    Type: 'AWS::KMS::Key'
+    Properties:
+      Description: Utilizada para criptografia das senhas dos usu��rios
+      Enabled: true
+      KeyPolicy:
+        Id: key-consolepolicy-3
+        Version: 2012-10-17
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::817086899180:root'
+            Action: 'kms:*'
+            Resource: '*'
+          - Sid: Allow access for Key Administrators
+            Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::817086899180:user/spotifalso'
+            Action:
+              - 'kms:Create*'
+              - 'kms:Describe*'
+              - 'kms:Enable*'
+              - 'kms:List*'
+              - 'kms:Put*'
+              - 'kms:Update*'
+              - 'kms:Revoke*'
+              - 'kms:Disable*'
+              - 'kms:Get*'
+              - 'kms:Delete*'
+              - 'kms:TagResource'
+              - 'kms:UntagResource'
+              - 'kms:ScheduleKeyDeletion'
+              - 'kms:CancelKeyDeletion'
+            Resource: '*'
+          - Sid: Allow use of the key
+            Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::817086899180:user/spotifalso'
+            Action:
+              - 'kms:Encrypt'
+              - 'kms:Decrypt'
+              - 'kms:ReEncrypt*'
+              - 'kms:GenerateDataKey*'
+              - 'kms:DescribeKey'
+            Resource: '*'
+          - Sid: Allow attachment of persistent resources
+            Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::817086899180:user/spotifalso'
+            Action:
+              - 'kms:CreateGrant'
+              - 'kms:ListGrants'
+              - 'kms:RevokeGrant'
+            Resource: '*'
+            Condition:
+              Bool:
+                'kms:GrantIsForAWSResource': 'true'
+      KeySpec: SYMMETRIC_DEFAULT
+      KeyUsage: ENCRYPT_DECRYPT
+      MultiRegion: false
+      Tags:
+        - Key: Application
+          Value: Spotifalso
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: e577d6ce-f190-4d76-9c48-af1fcf83407c
+  UserPasswordAlias:
+    Type: 'AWS::KMS::Alias'
+    Properties:
+      AliasName: alias/UserPassword
+      TargetKeyId: !Ref UserPassword
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 7247797d-4922-41a9-925a-c7442ba8fe25
