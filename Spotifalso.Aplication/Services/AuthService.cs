@@ -3,6 +3,7 @@ using Spotifalso.Aplication.Inputs;
 using Spotifalso.Aplication.Interfaces.Infrastructure;
 using Spotifalso.Aplication.Interfaces.Repositories;
 using Spotifalso.Aplication.Interfaces.Services;
+using Spotifalso.Aplication.Interfaces.Services.Caching;
 using Spotifalso.Aplication.ViewModels;
 using Spotifalso.Core.Exceptions;
 using System.Threading.Tasks;
@@ -15,12 +16,14 @@ namespace Spotifalso.Aplication.Services
         private readonly IUserRepository _userRepository;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
-        public AuthService(IKeyManagementService keyManagementService, IUserRepository userRepository, ITokenService tokenService, IMapper mapper)
+        private readonly IAuthCacheService _authCacheService;
+        public AuthService(IKeyManagementService keyManagementService, IUserRepository userRepository, ITokenService tokenService, IMapper mapper, IAuthCacheService authCacheService)
         {
             _keyManagementService = keyManagementService;
             _userRepository = userRepository;
             _tokenService = tokenService;
             _mapper = mapper;
+            _authCacheService = authCacheService;
         }
 
         public async Task<dynamic> Login(LoginInput loginInput)
@@ -36,10 +39,12 @@ namespace Spotifalso.Aplication.Services
             {
                 if (loginInput.Password == userPassword)
                 {
+                    var token = _tokenService.GenerateToken(user);
+                    await _authCacheService.SetTokenCacheAsync(user.Id, token);
                     return new
                     {
                         user = _mapper.Map<UserViewModel>(user),
-                        token = _tokenService.GenerateToken(user)
+                        token = token
                     };
                 }
 

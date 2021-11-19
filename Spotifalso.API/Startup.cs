@@ -24,6 +24,11 @@ using Spotifalso.Infrastructure.Data.Repositories;
 using Spotifalso.Infrastructure.JWT;
 using StackExchange.Redis;
 using System.Text;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Spotifalso.Infrastructure.Cache;
+using Spotifalso.Aplication.Services.Caching;
+using Spotifalso.Aplication.Interfaces.Services.Caching;
 
 namespace Spotifalso.API
 {
@@ -39,7 +44,7 @@ namespace Spotifalso.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-          
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -96,8 +101,16 @@ namespace Spotifalso.API
                 builder.UseMySql(mySQLConnection, ServerVersion.AutoDetect(mySQLConnection));
             });
 
-            var multiplexer = ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis"));
-            services.AddSingleton<IConnectionMultiplexer>(multiplexer);
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = Configuration.GetConnectionString("Redis");
+            });
+            services.Add(ServiceDescriptor.Singleton<IDistributedCache, RedisCache>());
+            services.AddSingleton<ICacheProvider, CacheProvider>();
+            services.AddSingleton<IAuthCacheService, AuthCacheService>();
+
+            //var multiplexer = ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis"));
+            //services.AddSingleton<IConnectionMultiplexer>(multiplexer);
 
             services.AddScoped<IUserRepository, UserRepository>();
 
