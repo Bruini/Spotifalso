@@ -1,8 +1,13 @@
 ﻿using Amazon.KeyManagementService;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Spotifalso.Aplication.Interfaces.Infrastructure;
+using Spotifalso.Aplication.Interfaces.Services.Caching;
+using Spotifalso.Aplication.Services.Caching;
 using Spotifalso.Infrastructure.AWS;
+using Spotifalso.Infrastructure.Cache;
 using Spotifalso.Infrastructure.JWT;
 using System.IO;
 
@@ -24,6 +29,13 @@ namespace Spotifalso.IntegrationTests.Fixtures
             serviceCollection.AddAWSService<IAmazonKeyManagementService>();
             serviceCollection.AddScoped<IKeyManagementService, KeyManagementService>();
             serviceCollection.AddScoped<ITokenService, TokenService>();
+            serviceCollection.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration.GetConnectionString("Redis");
+            });
+            serviceCollection.AddSingleton<IDistributedCache, RedisCache>();
+            serviceCollection.AddSingleton<ICacheProvider, CacheProvider>();
+            serviceCollection.AddSingleton<IAuthCacheService, AuthCacheService>();
 
             ServiceProvider = serviceCollection.BuildServiceProvider();
         }

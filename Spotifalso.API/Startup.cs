@@ -106,12 +106,9 @@ namespace Spotifalso.API
                 options.Configuration = Configuration.GetConnectionString("Redis");
             });
             services.Add(ServiceDescriptor.Singleton<IDistributedCache, RedisCache>());
+
             services.AddSingleton<ICacheProvider, CacheProvider>();
             services.AddSingleton<IAuthCacheService, AuthCacheService>();
-
-            //var multiplexer = ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis"));
-            //services.AddSingleton<IConnectionMultiplexer>(multiplexer);
-
             services.AddScoped<IUserRepository, UserRepository>();
 
             #endregion

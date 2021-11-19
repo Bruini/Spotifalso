@@ -20,18 +20,17 @@ namespace Spotifalso.Infrastructure.Cache
             return cachedObj == null ? null : JsonSerializer.Deserialize<T>(cachedObj);
         }
 
+        public async Task<string> GetFromCache(string key)
+        {
+            var cachedString = await _cache.GetStringAsync(key);
+            return cachedString == null || string.IsNullOrWhiteSpace(cachedString) ? null : cachedString;
+        }
+
         public async Task SetCache<T>(string key, T value, DistributedCacheEntryOptions options) where T : class
         {
             var cacheObj = JsonSerializer.Serialize(value);
             await _cache.SetStringAsync(key, cacheObj, options);
         }
-
-        public async Task<string> GetFromCache(string key) 
-        {
-            var cachedString = await _cache.GetStringAsync(key);
-            return cachedString == null ? null : cachedString;
-        }
-
         public async Task SetCache(string key, string value, DistributedCacheEntryOptions options)
         {
             await _cache.SetStringAsync(key, value, options);
