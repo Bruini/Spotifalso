@@ -22,6 +22,7 @@ using Spotifalso.Infrastructure.AWS;
 using Spotifalso.Infrastructure.Data.Config;
 using Spotifalso.Infrastructure.Data.Repositories;
 using Spotifalso.Infrastructure.JWT;
+using StackExchange.Redis;
 using System.Text;
 
 namespace Spotifalso.API
@@ -94,6 +95,9 @@ namespace Spotifalso.API
                 var mySQLConnection = Configuration.GetConnectionString(nameof(SpotifalsoDBContext));
                 builder.UseMySql(mySQLConnection, ServerVersion.AutoDetect(mySQLConnection));
             });
+
+            var multiplexer = ConnectionMultiplexer.Connect(Configuration.GetConnectionString("Redis"));
+            services.AddSingleton<IConnectionMultiplexer>(multiplexer);
 
             services.AddScoped<IUserRepository, UserRepository>();
 
