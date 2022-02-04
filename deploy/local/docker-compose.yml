@@ -1,14 +1,24 @@
 services:
+  # spotifalso-api:
+  #   container_name: spotifalso-api
+  #   build: ../../
+  #   restart: always
+  #   ports:
+  #     - 8000:80
+  #   depends_on:
+  #     - db
+  #     - redis
+
   db:
-      image: mysql
-      command: --default-authentication-plugin=mysql_native_password
-      restart: always
-      environment:
-        MYSQL_ROOT_PASSWORD: abc001
-      ports:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: abc001
+    ports:
       - 3306:3306
 
   redis:
-   image: redis:alpine
-   ports:
-    - "6379:6379"
+    image: redis:alpine
+    ports:
+      - "6379:6379"

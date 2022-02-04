@@ -1,30 +1,4 @@
 AWSTemplateFormatVersion: 2010-09-09
-Metadata:
-  'AWS::CloudFormation::Designer':
-    e577d6ce-f190-4d76-9c48-af1fcf83407c:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 330
-        'y': 30
-      z: 1
-      embeds: []
-    7247797d-4922-41a9-925a-c7442ba8fe25:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 60
-        'y': 90
-      z: 1
-      embeds: []
-    6dd5d886-41a8-4deb-8972-76ee470232b3:
-      source:
-        id: e577d6ce-f190-4d76-9c48-af1fcf83407c
-      target:
-        id: 7247797d-4922-41a9-925a-c7442ba8fe25
-      z: 1
 Resources:
   UserPassword:
     Type: 'AWS::KMS::Key'
@@ -90,14 +64,21 @@ Resources:
       Tags:
         - Key: Application
           Value: Spotifalso
-    Metadata:
-      'AWS::CloudFormation::Designer':
-        id: e577d6ce-f190-4d76-9c48-af1fcf83407c
   UserPasswordAlias:
     Type: 'AWS::KMS::Alias'
     Properties:
-      AliasName: alias/UserPassword
+      AliasName: alias/PasswordCrypto
       TargetKeyId: !Ref UserPassword
-    Metadata:
-      'AWS::CloudFormation::Designer':
-        id: 7247797d-4922-41a9-925a-c7442ba8fe25
+  Redis:
+    Type: AWS::ElastiCache::CacheCluster
+    Properties:
+      CacheNodeType: 'cache.t3.micro'
+      CacheSecurityGroupNames:
+        - !Ref RedisSecurityGroup
+      Engine: 'redis'
+      EngineVersion: '5.0.6'
+      NumCacheNodes: 1
+  RedisSecurityGroup:
+    Type: AWS::ElastiCache::SecurityGroup
+    Properties:
+      Description: 'Security Group for Redis'
