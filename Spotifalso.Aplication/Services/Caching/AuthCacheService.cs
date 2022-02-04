@@ -8,7 +8,7 @@ namespace Spotifalso.Aplication.Services.Caching
 {
     public class AuthCacheService : IAuthCacheService
     {
-        private const int TTL_Minutes = 60;
+        private const int TTL_Days = 7;
         private const string AliasKey = "UserToken";
         private readonly ICacheProvider _cacheProvider;
 
@@ -19,7 +19,7 @@ namespace Spotifalso.Aplication.Services.Caching
 
         public async Task SetTokenCacheAsync(Guid userId, string token)
         {
-            var cacheEntryOptions = new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(TTL_Minutes));
+            var cacheEntryOptions = new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromDays(TTL_Days));
 
             var tokenFromCache = await GetTokenCacheAsync(userId);
 

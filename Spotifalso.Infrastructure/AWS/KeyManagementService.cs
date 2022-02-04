@@ -1,5 +1,6 @@
 ﻿using Amazon.KeyManagementService;
 using Amazon.KeyManagementService.Model;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Spotifalso.Aplication.Interfaces.Infrastructure;
 using System;
@@ -13,12 +14,17 @@ namespace Spotifalso.Infrastructure.AWS
     {
         private readonly IAmazonKeyManagementService _kmsClient;
         private readonly ILogger _logger;
+        private readonly IConfiguration _configuration;
+        private string GetUserPasswordArn() => _configuration.GetSection("KmsARN").Value;
 
-        private const string USER_PASSWORD_ARN = "arn:aws:kms:us-east-1:817086899180:key/4072e4d2-117d-4bc8-b489-b7821fe50ddf";
-        public KeyManagementService(IAmazonKeyManagementService kmsClient, ILogger<KeyManagementService> logger)
+        public KeyManagementService(
+            IAmazonKeyManagementService kmsClient,
+            ILogger<KeyManagementService> logger,
+            IConfiguration configuration)
         {
             _kmsClient = kmsClient;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task<string> EncriptUserPassword(string password)
@@ -30,7 +36,7 @@ namespace Spotifalso.Infrastructure.AWS
 
                 EncryptRequest encryptRequest = new EncryptRequest()
                 {
-                    KeyId = USER_PASSWORD_ARN,
+                    KeyId = GetUserPasswordArn(),
                     Plaintext = passwordMemorystream,
                     EncryptionAlgorithm = EncryptionAlgorithmSpec.SYMMETRIC_DEFAULT
                 };
@@ -64,7 +70,7 @@ namespace Spotifalso.Infrastructure.AWS
                 var decryptRequest = new DecryptRequest()
                 {
                     CiphertextBlob = passwordMemoryStream,
-                    KeyId = USER_PASSWORD_ARN,
+                    KeyId = GetUserPasswordArn(),
                     EncryptionAlgorithm = EncryptionAlgorithmSpec.SYMMETRIC_DEFAULT
                 };
 

@@ -50,7 +50,7 @@ namespace Spotifalso.Infrastructure.Data.Repositories
 
         public async Task<bool> UserExist(string nickname)
         {
-           return await _context.Users.AnyAsync(u => u.Nickname == nickname);
+           return await _context.Users.AnyAsync(u => u.Nickname.ToLowerInvariant() == nickname.ToLowerInvariant());
         }
 
         public async Task SaveChangesAsync()

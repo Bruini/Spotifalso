@@ -22,7 +22,6 @@ using Spotifalso.Infrastructure.AWS;
 using Spotifalso.Infrastructure.Data.Config;
 using Spotifalso.Infrastructure.Data.Repositories;
 using Spotifalso.Infrastructure.JWT;
-using StackExchange.Redis;
 using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
