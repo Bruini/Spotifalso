@@ -1,5 +1,24 @@
 AWSTemplateFormatVersion: 2010-09-09
 Resources:
+  SpotifalsoGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: "SpotifalsoAPP"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AdministratorAccess"
+  SpotifalsoUser:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - !Ref SpotifalsoGroup
+      LoginProfile:
+        Password: "abc@!001"
+        PasswordResetRequired: false
+      UserName: "SpotifalsoUser"
+  SpotifalsoUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref SpotifalsoUser
   UserPassword:
     Type: 'AWS::KMS::Key'
     Properties:
@@ -12,13 +31,16 @@ Resources:
           - Sid: Enable IAM User Permissions
             Effect: Allow
             Principal:
-              AWS: 'arn:aws:iam::817086899180:root'
+              AWS:
+              - 'arn:aws:iam::817086899180:root'
             Action: 'kms:*'
             Resource: '*'
           - Sid: Allow access for Key Administrators
             Effect: Allow
             Principal:
-              AWS: 'arn:aws:iam::817086899180:user/spotifalso'
+              AWS:
+              - 'arn:aws:iam::817086899180:user/spotifalso'
+              - !GetAtt SpotifalsoUser.Arn
             Action:
               - 'kms:Create*'
               - 'kms:Describe*'
@@ -38,7 +60,9 @@ Resources:
           - Sid: Allow use of the key
             Effect: Allow
             Principal:
-              AWS: 'arn:aws:iam::817086899180:user/spotifalso'
+              AWS: 
+              - 'arn:aws:iam::817086899180:user/spotifalso'
+              - !GetAtt SpotifalsoUser.Arn
             Action:
               - 'kms:Encrypt'
               - 'kms:Decrypt'
@@ -49,7 +73,9 @@ Resources:
           - Sid: Allow attachment of persistent resources
             Effect: Allow
             Principal:
-              AWS: 'arn:aws:iam::817086899180:user/spotifalso'
+              AWS:
+              - 'arn:aws:iam::817086899180:user/spotifalso'
+              - !GetAtt SpotifalsoUser.Arn
             Action:
               - 'kms:CreateGrant'
               - 'kms:ListGrants'
@@ -82,3 +108,10 @@ Resources:
     Type: AWS::ElastiCache::SecurityGroup
     Properties:
       Description: 'Security Group for Redis'
+Outputs:
+  AccessKey:
+    Description: AccessKey of SpotifalsoUser
+    Value: !Ref SpotifalsoUserAccessKey
+  SecretKey:
+    Description: SecretKey of SpotifalsoUser
+    Value: !GetAtt SpotifalsoUserAccessKey.SecretAccessKey
