@@ -109,6 +109,7 @@ namespace Spotifalso.API
             services.AddSingleton<ICacheProvider, CacheProvider>();
             services.AddSingleton<IAuthCacheService, AuthCacheService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IArtistRepository, ArtistRepository>();
 
             #endregion
 
