@@ -12,10 +12,12 @@ namespace Spotifalso.Infrastructure.Data.Config
         }
        
         public DbSet<User> Users { get; set; }
+        public DbSet<Artist> Artists { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserDBMapping());
+            modelBuilder.ApplyConfiguration(new ArtistDBMapping());
         }
     }
 }
