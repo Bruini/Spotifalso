@@ -4,8 +4,6 @@ using Spotifalso.Core.Models;
 using Spotifalso.Infrastructure.Data.Config;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Spotifalso.Infrastructure.Data.Repositories

@@ -113,13 +113,20 @@ namespace Spotifalso.API
 
             #endregion
 
-            #region AplicationServices
+            #region Validators
 
             services.AddScoped<IValidator<UserInput>, UserValidator>();
+            services.AddScoped<IValidator<ArtistInput>, ArtistValidator>();
+
+            #endregion
+
+            #region AplicationServices
+
             services.AddScoped<IKeyManagementService, KeyManagementService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IArtistService, ArtistService>();
 
             #endregion
 

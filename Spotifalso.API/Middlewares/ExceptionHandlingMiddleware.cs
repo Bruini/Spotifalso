@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Spotifalso.Core.Exceptions;
 using Spotifalso.Core.Exceptions.Base;
 using System;
 using System.Text.Json;
