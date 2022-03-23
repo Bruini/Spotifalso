@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Spotifalso.Core.Models
 {
     public class Music
     {
         public Guid Id { get; private set; }
-        public Guid CoverImageId { get; private set; }
+        public Guid? CoverImageId { get; private set; }
         public string Title { get; private set; }
         public string Lyrics { get; private set; }
         public List<Artist> Artists { get; private set; }
@@ -15,18 +14,17 @@ namespace Spotifalso.Core.Models
         public DateTime ReleaseDate { get; private set; }
 
         public Music(
-            Guid coverImageId,
+            Guid? coverImageId,
             string title,
             string lyrics,
-            IEnumerable<Artist> artists,
             TimeSpan duration,
             DateTime releaseDate)
         {
             Id = Guid.NewGuid();
-            CoverImageId = coverImageId;
+            CoverImageId = coverImageId ?? Guid.Empty;
             Title = title;
             Lyrics = lyrics;
-            Artists = artists.ToList();
+            Artists = new List<Artist>();
             Duration = duration;
             ReleaseDate = releaseDate;
         }
