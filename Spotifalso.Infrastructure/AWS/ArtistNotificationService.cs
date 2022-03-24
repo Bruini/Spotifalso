@@ -87,8 +87,34 @@ namespace Spotifalso.Infrastructure.AWS
 
         }
 
+        public async Task NotifyNews(Guid artistId, string message)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(message))
+                    throw new ArgumentNullException(message);
 
-        public async Task<Tuple<string, Dictionary<string, string>>> FindSubscriptionByEmail(string email, string nextToken = null)
+                var publishRequest = new PublishRequest
+                {
+                    TopicArn = GetFollowArtistTopicArn(),
+                    MessageAttributes = new Dictionary<string, MessageAttributeValue>
+                    {
+                        { "ArtistIDs", new MessageAttributeValue { DataType = "String", StringValue = artistId.ToString() } }
+                    },
+                    Message = message
+                };
+
+                await _snsClient.PublishAsync(publishRequest);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Error on NotifyNews method", e);
+                throw;
+            }
+
+        }
+
+        private async Task<Tuple<string, Dictionary<string, string>>> FindSubscriptionByEmail(string email, string nextToken = null)
         {
             var listSubscriptionRequest = new ListSubscriptionsByTopicRequest(GetFollowArtistTopicArn(), nextToken);
 
@@ -114,7 +140,7 @@ namespace Spotifalso.Infrastructure.AWS
                     return await FindSubscriptionByEmail(email, response.NextToken);
                 }
                 else return null;
-                
+
             }
             return null;
         }
