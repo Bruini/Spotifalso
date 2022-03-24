@@ -52,5 +52,11 @@ namespace Spotifalso.API.Controllers
             await _artistService.DeleteAsync(id);
             NoContent();
         }
+
+        [HttpPost("follow/{id}")]
+        public async Task<bool> Follow(Guid id, [FromBody] EmailInput emailInput)
+        {
+            return await _artistService.FollowArtistAsync(id, User, emailInput);
+        }
     }
 }

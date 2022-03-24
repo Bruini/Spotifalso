@@ -1,11 +1,14 @@
 ﻿using FluentValidation;
 using Spotifalso.Aplication.Inputs;
+using Spotifalso.Aplication.Interfaces.Infrastructure;
 using Spotifalso.Aplication.Interfaces.Repositories;
 using Spotifalso.Aplication.Interfaces.Services;
 using Spotifalso.Core.Exceptions;
 using Spotifalso.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Spotifalso.Aplication.Services
@@ -13,11 +16,20 @@ namespace Spotifalso.Aplication.Services
     public class ArtistService : IArtistService
     {
         private readonly IArtistRepository _artistRepository;
+        private readonly IUserService _userService;
         private readonly IValidator<ArtistInput> _validator;
-        public ArtistService(IArtistRepository artistRepository, IValidator<ArtistInput> validator)
+        private readonly IFollowArtistNotificationService _followArtistNotificationService;
+        public ArtistService(
+            IArtistRepository artistRepository,
+            IUserService userService,
+            IValidator<ArtistInput> validator,
+            IFollowArtistNotificationService followArtistNotificationService
+            )
         {
+            _userService = userService;
             _artistRepository = artistRepository;
             _validator = validator;
+            _followArtistNotificationService = followArtistNotificationService;
         }
         public async Task DeleteAsync(Guid id)
         {
@@ -27,6 +39,20 @@ namespace Spotifalso.Aplication.Services
 
             _artistRepository.Delete(artist);
             await _artistRepository.SaveChangesAsync();
+        }
+
+        public async Task<bool> FollowArtistAsync(Guid id, ClaimsPrincipal claims, EmailInput emailInput)
+        {
+            var artist = await _artistRepository.GetByIdAsync(id);
+            if (artist is null)
+                throw new ArtistNotFoundException(id);
+
+            var userId = Guid.Parse(claims.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimarySid.ToString()).Value);
+            var user = await _userService.GetByIdAsync(userId);
+            if (user is null)
+                throw new UserNotFoundException(userId);
+
+            return await _followArtistNotificationService.SubscribeArtist(id, userId, emailInput.Email);
         }
 
         public async Task<IEnumerable<Artist>> GetAllAsync() 

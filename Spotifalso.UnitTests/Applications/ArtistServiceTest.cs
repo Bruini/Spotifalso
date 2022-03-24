@@ -1,11 +1,15 @@
 ﻿using Moq;
+using Spotifalso.Aplication.Interfaces.Infrastructure;
 using Spotifalso.Aplication.Interfaces.Repositories;
+using Spotifalso.Aplication.Interfaces.Services;
 using Spotifalso.Aplication.Services;
 using Spotifalso.Aplication.Validators;
 using Spotifalso.Core.Exceptions;
 using Spotifalso.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -14,11 +18,15 @@ namespace Spotifalso.UnitTests.Applications
     public class ArtistServiceTest
     {
         private readonly Mock<IArtistRepository> _artistRepositoryMock;
+        private readonly Mock<IUserService> _userServiceMock;
+        private readonly Mock<IFollowArtistNotificationService> _followArtistServiceMock;
         private readonly ArtistValidator _artistValidator;
 
         public ArtistServiceTest()
         {
             _artistRepositoryMock = new Mock<IArtistRepository>();
+            _userServiceMock = new Mock<IUserService>();
+            _followArtistServiceMock = new Mock<IFollowArtistNotificationService>();
             _artistValidator = new ArtistValidator();
         }
 
@@ -27,7 +35,7 @@ namespace Spotifalso.UnitTests.Applications
         {
             _artistRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(GetFakeArtists());
 
-            var artistService = new ArtistService(_artistRepositoryMock.Object, _artistValidator);
+            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object);
 
             var artists = await artistService.GetAllAsync();
 
@@ -42,7 +50,7 @@ namespace Spotifalso.UnitTests.Applications
 
             _artistRepositoryMock.Setup(x => x.GetByIdAsync(artist.Id)).ReturnsAsync(artist);
 
-            var artistService = new ArtistService(_artistRepositoryMock.Object, _artistValidator);
+            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object);
 
             var artistFromDb = await artistService.GetByIdAsync(artist.Id);
 
@@ -60,7 +68,7 @@ namespace Spotifalso.UnitTests.Applications
 
             _artistRepositoryMock.Setup(x => x.GetByIdAsync(artist.Id)).ReturnsAsync(artist);
 
-            var artistService = new ArtistService(_artistRepositoryMock.Object, _artistValidator);
+            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object);
 
             await artistService.DeleteAsync(artist.Id);
 
@@ -73,7 +81,7 @@ namespace Spotifalso.UnitTests.Applications
         public async Task Should_Delete_artist_By_Id_Expected_artistNotFoundException()
         {
             var artist = GetFakeArtists().FirstOrDefault();
-            var artistService = new ArtistService(_artistRepositoryMock.Object, _artistValidator);
+            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object);
 
             var ex = await Assert.ThrowsAsync<ArtistNotFoundException>(() => artistService.DeleteAsync(artist.Id));
 
@@ -81,6 +89,45 @@ namespace Spotifalso.UnitTests.Applications
             _artistRepositoryMock.Verify(x => x.GetByIdAsync(artist.Id), Times.Once);
             _artistRepositoryMock.Verify(x => x.Delete(artist), Times.Never);
             _artistRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Never);
+        }
+
+        [Fact]
+        public async Task Should_FollowArtistAsync()
+        {
+            var artist = GetFakeArtists().FirstOrDefault();
+            var userId = Guid.NewGuid();
+
+            var identities = new ClaimsIdentity(new Claim[]
+                               {
+                                            new Claim(ClaimTypes.PrimarySid, userId.ToString()),
+                                            new Claim(ClaimTypes.Name, "Teste"),
+                                            new Claim(ClaimTypes.Role, "Admin"),
+                               },
+                               "JWT",
+                               ClaimTypes.Name,
+                               ClaimTypes.Role);
+
+            var userClaim = new ClaimsPrincipal(identities);
+
+            _artistRepositoryMock.Setup(x => x.GetByIdAsync(artist.Id)).ReturnsAsync(artist);
+            _userServiceMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(
+                new Aplication.ViewModels.UserViewModel 
+                    {
+                        Id = userId,
+                        Nickname = "Teste",
+                        Role = "Admin"
+                    });
+            _followArtistServiceMock.Setup(x => x.SubscribeArtist(artist.Id, userId, "teste@teste.com")).ReturnsAsync(true);
+
+            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object);
+
+            var response = await artistService.FollowArtistAsync(artist.Id, userClaim, new Aplication.Inputs.EmailInput { Email = "teste@teste.com" });
+
+            Assert.True(response);
+
+            _artistRepositoryMock.Verify(x => x.GetByIdAsync(artist.Id), Times.Once);
+            _userServiceMock.Verify(x => x.GetByIdAsync(userId), Times.Once);
+            _followArtistServiceMock.Verify(x => x.SubscribeArtist(artist.Id, userId, "teste@teste.com"), Times.Once);
         }
 
         private IEnumerable<Artist> GetFakeArtists()
@@ -92,5 +139,6 @@ namespace Spotifalso.UnitTests.Applications
 
             return artists;
         }
+
     }
 }
