@@ -1,4 +1,5 @@
 ﻿using Amazon.KeyManagementService;
+using Amazon.SimpleNotificationService;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
@@ -27,7 +28,9 @@ namespace Spotifalso.IntegrationTests.Fixtures
             serviceCollection.AddSingleton<IConfiguration>(configuration);
             serviceCollection.AddLogging();
             serviceCollection.AddAWSService<IAmazonKeyManagementService>();
+            serviceCollection.AddAWSService<IAmazonSimpleNotificationService>();
             serviceCollection.AddScoped<IKeyManagementService, KeyManagementService>();
+            serviceCollection.AddScoped<IFollowArtistNotificationService, FollowArtistNotificationService>();
             serviceCollection.AddScoped<ITokenService, TokenService>();
             serviceCollection.AddStackExchangeRedisCache(options =>
             {

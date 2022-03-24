@@ -28,6 +28,7 @@ using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Spotifalso.Infrastructure.Cache;
 using Spotifalso.Aplication.Services.Caching;
 using Spotifalso.Aplication.Interfaces.Services.Caching;
+using Amazon.SimpleNotificationService;
 
 namespace Spotifalso.API
 {
@@ -93,6 +94,7 @@ namespace Spotifalso.API
 
             //AWS services
             services.AddAWSService<IAmazonKeyManagementService>();
+            services.AddAWSService<IAmazonSimpleNotificationService>();
 
             services.AddDbContextPool<SpotifalsoDBContext>(builder =>
             {
@@ -123,6 +125,7 @@ namespace Spotifalso.API
             #region AplicationServices
 
             services.AddScoped<IKeyManagementService, KeyManagementService>();
+            services.AddScoped<IFollowArtistNotificationService, FollowArtistNotificationService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
