@@ -33,6 +33,8 @@ namespace Spotifalso.Infrastructure.Data.Config.Mappings
                 .HasColumnType("varchar")
                 .HasMaxLength(100)
                 .IsRequired();
+
+            builder.HasMany(a => a.Musics);
         }
     }
 }

@@ -22,7 +22,7 @@ Resources:
   UserPassword:
     Type: 'AWS::KMS::Key'
     Properties:
-      Description: Utilizada para criptografia das senhas dos usu��rios
+      Description: Utilizada para criptografia das senhas dos usuarios
       Enabled: true
       KeyPolicy:
         Id: key-consolepolicy-3
@@ -39,7 +39,6 @@ Resources:
             Effect: Allow
             Principal:
               AWS:
-              - 'arn:aws:iam::817086899180:user/spotifalso'
               - !GetAtt SpotifalsoUser.Arn
             Action:
               - 'kms:Create*'
@@ -61,7 +60,6 @@ Resources:
             Effect: Allow
             Principal:
               AWS: 
-              - 'arn:aws:iam::817086899180:user/spotifalso'
               - !GetAtt SpotifalsoUser.Arn
             Action:
               - 'kms:Encrypt'
@@ -74,7 +72,6 @@ Resources:
             Effect: Allow
             Principal:
               AWS:
-              - 'arn:aws:iam::817086899180:user/spotifalso'
               - !GetAtt SpotifalsoUser.Arn
             Action:
               - 'kms:CreateGrant'
@@ -108,6 +105,33 @@ Resources:
     Type: AWS::ElastiCache::SecurityGroup
     Properties:
       Description: 'Security Group for Redis'
+  FollowArtistTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Tags:
+       - Key: Application
+         Value: Spotifalso
+  FollowArtistTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument: 
+        Version: 2012-10-17
+        Statement:
+          - Sid: Allow access for FollowArtist SNS topic
+            Effect: Allow
+            Principal:
+              AWS:
+              - !GetAtt SpotifalsoUser.Arn
+            Action:
+              - 'sns:GetTopicAttributes'
+              - 'sns:ListSubscriptionsByTopic'
+              - 'sns:Publish'
+              - 'sns:SetTopicAttributes'
+              - 'sns:Subscribe'    
+            Resource:
+              - !Ref FollowArtistTopic
+      Topics:
+        - !Ref FollowArtistTopic
 Outputs:
   AccessKey:
     Description: AccessKey of SpotifalsoUser
@@ -115,3 +139,6 @@ Outputs:
   SecretKey:
     Description: SecretKey of SpotifalsoUser
     Value: !GetAtt SpotifalsoUserAccessKey.SecretAccessKey
+  FollowArtistSNSTopic:
+    Description: FollowArtist ARN SNS topic
+    Value: !Ref FollowArtistTopic
