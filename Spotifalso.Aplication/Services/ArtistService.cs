@@ -18,12 +18,12 @@ namespace Spotifalso.Aplication.Services
         private readonly IArtistRepository _artistRepository;
         private readonly IUserService _userService;
         private readonly IValidator<ArtistInput> _validator;
-        private readonly IFollowArtistNotificationService _followArtistNotificationService;
+        private readonly IArtistNotificationService _followArtistNotificationService;
         public ArtistService(
             IArtistRepository artistRepository,
             IUserService userService,
             IValidator<ArtistInput> validator,
-            IFollowArtistNotificationService followArtistNotificationService
+            IArtistNotificationService followArtistNotificationService
             )
         {
             _userService = userService;
@@ -52,7 +52,7 @@ namespace Spotifalso.Aplication.Services
             if (user is null)
                 throw new UserNotFoundException(userId);
 
-            return await _followArtistNotificationService.SubscribeArtist(id, userId, emailInput.Email);
+            return await _followArtistNotificationService.FollowArtist(id, userId, emailInput.Email);
         }
 
         public async Task<IEnumerable<Artist>> GetAllAsync() 

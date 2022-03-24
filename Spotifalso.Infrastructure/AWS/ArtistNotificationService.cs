@@ -10,14 +10,14 @@ using Spotifalso.Aplication.Interfaces.Infrastructure;
 
 namespace Spotifalso.Infrastructure.AWS
 {
-    public class FollowArtistNotificationService : IFollowArtistNotificationService
+    public class ArtistNotificationService : IArtistNotificationService
     {
         private readonly IAmazonSimpleNotificationService _snsClient;
         private readonly ILogger _logger;
         private readonly IConfiguration _configuration;
 
-        public FollowArtistNotificationService(IAmazonSimpleNotificationService amazonSimpleNotificationService,
-            ILogger<FollowArtistNotificationService> logger,
+        public ArtistNotificationService(IAmazonSimpleNotificationService amazonSimpleNotificationService,
+            ILogger<ArtistNotificationService> logger,
             IConfiguration configuration)
         {
             _snsClient = amazonSimpleNotificationService;
@@ -25,7 +25,7 @@ namespace Spotifalso.Infrastructure.AWS
             _configuration = configuration;
         }
 
-        public async Task<bool> SubscribeArtist(Guid artistId, Guid userId, string emailAddress)
+        public async Task<bool> FollowArtist(Guid artistId, Guid userId, string emailAddress)
         {
             try
             {

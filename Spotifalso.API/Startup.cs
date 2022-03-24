@@ -126,7 +126,7 @@ namespace Spotifalso.API
             #region AplicationServices
 
             services.AddScoped<IKeyManagementService, KeyManagementService>();
-            services.AddScoped<IFollowArtistNotificationService, FollowArtistNotificationService>();
+            services.AddScoped<IArtistNotificationService, ArtistNotificationService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();

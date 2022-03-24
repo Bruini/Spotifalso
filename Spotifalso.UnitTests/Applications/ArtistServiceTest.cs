@@ -19,14 +19,14 @@ namespace Spotifalso.UnitTests.Applications
     {
         private readonly Mock<IArtistRepository> _artistRepositoryMock;
         private readonly Mock<IUserService> _userServiceMock;
-        private readonly Mock<IFollowArtistNotificationService> _followArtistServiceMock;
+        private readonly Mock<IArtistNotificationService> _followArtistServiceMock;
         private readonly ArtistValidator _artistValidator;
 
         public ArtistServiceTest()
         {
             _artistRepositoryMock = new Mock<IArtistRepository>();
             _userServiceMock = new Mock<IUserService>();
-            _followArtistServiceMock = new Mock<IFollowArtistNotificationService>();
+            _followArtistServiceMock = new Mock<IArtistNotificationService>();
             _artistValidator = new ArtistValidator();
         }
 
@@ -117,7 +117,7 @@ namespace Spotifalso.UnitTests.Applications
                         Nickname = "Teste",
                         Role = "Admin"
                     });
-            _followArtistServiceMock.Setup(x => x.SubscribeArtist(artist.Id, userId, "teste@teste.com")).ReturnsAsync(true);
+            _followArtistServiceMock.Setup(x => x.FollowArtist(artist.Id, userId, "teste@teste.com")).ReturnsAsync(true);
 
             var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object);
 
@@ -127,7 +127,7 @@ namespace Spotifalso.UnitTests.Applications
 
             _artistRepositoryMock.Verify(x => x.GetByIdAsync(artist.Id), Times.Once);
             _userServiceMock.Verify(x => x.GetByIdAsync(userId), Times.Once);
-            _followArtistServiceMock.Verify(x => x.SubscribeArtist(artist.Id, userId, "teste@teste.com"), Times.Once);
+            _followArtistServiceMock.Verify(x => x.FollowArtist(artist.Id, userId, "teste@teste.com"), Times.Once);
         }
 
         private IEnumerable<Artist> GetFakeArtists()

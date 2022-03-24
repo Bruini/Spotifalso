@@ -30,7 +30,7 @@ namespace Spotifalso.IntegrationTests.Fixtures
             serviceCollection.AddAWSService<IAmazonKeyManagementService>();
             serviceCollection.AddAWSService<IAmazonSimpleNotificationService>();
             serviceCollection.AddScoped<IKeyManagementService, KeyManagementService>();
-            serviceCollection.AddScoped<IFollowArtistNotificationService, FollowArtistNotificationService>();
+            serviceCollection.AddScoped<IArtistNotificationService, ArtistNotificationService>();
             serviceCollection.AddScoped<ITokenService, TokenService>();
             serviceCollection.AddStackExchangeRedisCache(options =>
             {

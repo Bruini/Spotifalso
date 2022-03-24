@@ -10,11 +10,11 @@ namespace Spotifalso.IntegrationTests.AWS
     public class FollowArtistNotificationServiceIntegrationTest : IClassFixture<BaseServicesTestFixture>
     {
         private readonly BaseServicesTestFixture _fixture;
-        private readonly IFollowArtistNotificationService _followArtistNotificationService;
+        private readonly IArtistNotificationService _followArtistNotificationService;
         public FollowArtistNotificationServiceIntegrationTest(BaseServicesTestFixture fixture)
         {
             _fixture = fixture;
-            _followArtistNotificationService = _fixture.ServiceProvider.GetRequiredService<IFollowArtistNotificationService>();
+            _followArtistNotificationService = _fixture.ServiceProvider.GetRequiredService<IArtistNotificationService>();
         }
 
         [Fact]
@@ -24,7 +24,7 @@ namespace Spotifalso.IntegrationTests.AWS
             var userID = Guid.NewGuid();
             var email = "pedro.bruini@hotmail.com";
 
-            var response = await _followArtistNotificationService.SubscribeArtist(artistID, userID, email);
+            var response = await _followArtistNotificationService.FollowArtist(artistID, userID, email);
 
             Assert.True(response);
         }
