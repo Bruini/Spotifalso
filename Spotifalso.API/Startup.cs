@@ -29,6 +29,8 @@ using Spotifalso.Infrastructure.Cache;
 using Spotifalso.Aplication.Services.Caching;
 using Spotifalso.Aplication.Interfaces.Services.Caching;
 using Amazon.SimpleNotificationService;
+using Nest;
+using Spotifalso.Infrastructure.Data.Search;
 
 namespace Spotifalso.API
 {
@@ -96,20 +98,30 @@ namespace Spotifalso.API
             services.AddAWSService<IAmazonKeyManagementService>();
             services.AddAWSService<IAmazonSimpleNotificationService>();
 
+            //MySql DB
             services.AddDbContextPool<SpotifalsoDBContext>(builder =>
             {
                 var mySQLConnection = Configuration.GetConnectionString(nameof(SpotifalsoDBContext));
                 builder.UseMySql(mySQLConnection, ServerVersion.AutoDetect(mySQLConnection));
             });
 
+            //Redis
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = Configuration.GetConnectionString("Redis");
             });
             services.Add(ServiceDescriptor.Singleton<IDistributedCache, RedisCache>());
 
+            //Elastic
+            services.AddSingleton<IElasticClient>(SearchConfig.GetClient());
+
+            //Infra services
             services.AddSingleton<ICacheProvider, CacheProvider>();
             services.AddSingleton<IAuthCacheService, AuthCacheService>();
+            services.AddScoped<IKeyManagementService, KeyManagementService>();
+            services.AddScoped<IArtistNotificationService, ArtistNotificationService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddSingleton<IMusicSearchService, MusicSearchService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IArtistRepository, ArtistRepository>();
             services.AddScoped<IMusicRepository, MusicRepository>();
@@ -126,9 +138,6 @@ namespace Spotifalso.API
 
             #region AplicationServices
 
-            services.AddScoped<IKeyManagementService, KeyManagementService>();
-            services.AddScoped<IArtistNotificationService, ArtistNotificationService>();
-            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IArtistService, ArtistService>();

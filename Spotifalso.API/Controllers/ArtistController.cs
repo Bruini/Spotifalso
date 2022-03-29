@@ -34,7 +34,6 @@ namespace Spotifalso.API.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<Artist> Post([FromBody] ArtistInput artistInput)
         {
             return await _artistService.InsertAsync(artistInput);

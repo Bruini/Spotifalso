@@ -17,22 +17,25 @@ namespace Spotifalso.Aplication.Services
         private readonly IMusicRepository _musicRepository;
         private readonly IArtistRepository _artistRepository;
         private readonly IValidator<MusicInput> _validator;
+        private readonly IMusicSearchService _musicSearchService;
         private readonly IArtistNotificationService _artistNotificationService;
 
         public MusicService(
             IMusicRepository musicRepository,
             IValidator<MusicInput> validator,
+            IMusicSearchService musicSearchService,
             IArtistNotificationService artistNotificationService,
             IArtistRepository artistRepository
             )
         {
             _musicRepository = musicRepository;
             _validator = validator;
+            _musicSearchService = musicSearchService;
             _artistNotificationService = artistNotificationService;
             _artistRepository = artistRepository;
         }
 
-        public async Task<Music> AddAsync(MusicInput musicInput)
+        public async Task<Music> InsertAsync(MusicInput musicInput)
         {
             await _validator.ValidateAndThrowAsync(musicInput);
 
@@ -51,12 +54,13 @@ namespace Spotifalso.Aplication.Services
             await _musicRepository.AddAsync(music);
             await _musicRepository.SaveChangesAsync();
 
+            await _musicSearchService.Upload(music);
             await NotifyNewMusic(music, artists);
 
             return music;
         }
 
-        public async Task Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var music = await _musicRepository.GetByIdAsync(id);
             if (music is null)
@@ -84,7 +88,7 @@ namespace Spotifalso.Aplication.Services
             throw new NotImplementedException();
         }
 
-        public async Task<Music> Update(Guid id, MusicInput musicInput)
+        public async Task<Music> UpdateAsync(Guid id, MusicInput musicInput)
         {
             var music = await _musicRepository.GetByIdAsync(id);
             if (music is null)
