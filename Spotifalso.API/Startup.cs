@@ -120,6 +120,7 @@ namespace Spotifalso.API
 
             services.AddScoped<IValidator<UserInput>, UserValidator>();
             services.AddScoped<IValidator<ArtistInput>, ArtistValidator>();
+            services.AddScoped<IValidator<MusicInput>, MusicValidator>();
 
             #endregion
 
@@ -131,6 +132,7 @@ namespace Spotifalso.API
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IArtistService, ArtistService>();
+            services.AddScoped<IMusicService, MusicService>();
 
             #endregion
 

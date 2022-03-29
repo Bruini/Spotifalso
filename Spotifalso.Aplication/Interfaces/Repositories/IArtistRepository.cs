@@ -8,6 +8,7 @@ namespace Spotifalso.Aplication.Interfaces.Repositories
     public interface IArtistRepository
     {
         Task<IEnumerable<Artist>> GetAllAsync();
+        Task<IEnumerable<Artist>> GetAllByIdListAsync(IEnumerable<Guid> ids);
         Task<Artist> GetByIdAsync(Guid id);
         Task<Artist> AddAsync(Artist artist);
         Task<Artist> GetByName(string name);

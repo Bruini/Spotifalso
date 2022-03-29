@@ -4,6 +4,7 @@ using Spotifalso.Core.Models;
 using Spotifalso.Infrastructure.Data.Config;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Spotifalso.Infrastructure.Data.Repositories
@@ -41,6 +42,13 @@ namespace Spotifalso.Infrastructure.Data.Repositories
         public async Task<IEnumerable<Artist>> GetAllAsync()
         {
             return await _context.Artists.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Artist>> GetAllByIdListAsync(IEnumerable<Guid> ids)
+        {
+            return await _context.Artists
+                .Where(a => ids.Contains(a.Id))
+                .ToListAsync();
         }
 
         public async Task<Artist> GetByDisplayName(string displayName)

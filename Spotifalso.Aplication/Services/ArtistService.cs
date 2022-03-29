@@ -85,7 +85,7 @@ namespace Spotifalso.Aplication.Services
         {
             var artist = await _artistRepository.GetByIdAsync(id);
             if (artist is null)
-                throw new UserNotFoundException(id);
+                throw new ArtistNotFoundException(id);
 
             await _validator.ValidateAndThrowAsync(artistInput);
 

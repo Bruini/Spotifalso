@@ -29,7 +29,7 @@ namespace Spotifalso.Core.Models
             ReleaseDate = releaseDate;
         }
 
-        public void ChangeCoverImageId(Guid coverImageId)
+        public void ChangeCoverImageId(Guid? coverImageId)
         {
             if (coverImageId != Guid.Empty && coverImageId != this.CoverImageId)
                 CoverImageId = coverImageId;
