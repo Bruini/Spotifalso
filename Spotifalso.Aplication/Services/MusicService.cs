@@ -3,6 +3,7 @@ using Spotifalso.Aplication.Inputs;
 using Spotifalso.Aplication.Interfaces.Infrastructure;
 using Spotifalso.Aplication.Interfaces.Repositories;
 using Spotifalso.Aplication.Interfaces.Services;
+using Spotifalso.Aplication.ViewModels;
 using Spotifalso.Core.Exceptions;
 using Spotifalso.Core.Models;
 using System;
@@ -54,7 +55,7 @@ namespace Spotifalso.Aplication.Services
             await _musicRepository.AddAsync(music);
             await _musicRepository.SaveChangesAsync();
 
-            await _musicSearchService.Upload(music);
+            await _musicSearchService.IndexAsync(music);
             await NotifyNewMusic(music, artists);
 
             return music;
@@ -83,9 +84,12 @@ namespace Spotifalso.Aplication.Services
             return music;
         }
 
-        public Task<IEnumerable<Music>> SearchAsync(string searchTerm)
+        public async Task<IEnumerable<MusicViewModel>> SearchAsync(string searchTerm)
         {
-            throw new NotImplementedException();
+            if(searchTerm == null || string.IsNullOrWhiteSpace(searchTerm))
+                throw new ArgumentNullException(nameof(searchTerm));
+
+            return await _musicSearchService.SearchInAllFields(searchTerm);
         }
 
         public async Task<Music> UpdateAsync(Guid id, MusicInput musicInput)

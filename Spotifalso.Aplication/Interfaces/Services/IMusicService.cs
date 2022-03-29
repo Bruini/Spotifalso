@@ -1,4 +1,5 @@
 ﻿using Spotifalso.Aplication.Inputs;
+using Spotifalso.Aplication.ViewModels;
 using Spotifalso.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,6 @@ namespace Spotifalso.Aplication.Interfaces.Services
         Task<Music> InsertAsync(MusicInput musicInput);
         Task<Music> UpdateAsync(Guid id, MusicInput musicInput);
         Task DeleteAsync(Guid id);
-        Task<IEnumerable<Music>> SearchAsync(string searchTerm);
+        Task<IEnumerable<MusicViewModel>> SearchAsync(string searchTerm);
     }
 }

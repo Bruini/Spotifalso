@@ -9,7 +9,7 @@ namespace Spotifalso.Core.Models
         public string DisplayName { get; private set; }
         public string Bio { get; private set; }
         public string Name { get; private set; }
-        public IEnumerable<Music> Musics { get; private set; }
+        public ICollection<Music> Musics { get; private set; }
 
         public Artist(string displayName, string bio, string name)
         {
@@ -17,7 +17,6 @@ namespace Spotifalso.Core.Models
             DisplayName = displayName;
             Bio = bio;
             Name = name;
-            Musics = new List<Music>();
         }
 
         public void ChangeDisplayName(string displayName)

@@ -31,6 +31,7 @@ using Spotifalso.Aplication.Interfaces.Services.Caching;
 using Amazon.SimpleNotificationService;
 using Nest;
 using Spotifalso.Infrastructure.Data.Search;
+using System.Text.Json.Serialization;
 
 namespace Spotifalso.API
 {
@@ -47,7 +48,8 @@ namespace Spotifalso.API
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Spotifalso.API", Version = "v1" });

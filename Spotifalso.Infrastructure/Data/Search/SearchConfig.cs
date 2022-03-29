@@ -1,5 +1,4 @@
 ﻿using Nest;
-using Spotifalso.Core.Models;
 using System;
 
 namespace Spotifalso.Infrastructure.Data.Search
@@ -12,10 +11,8 @@ namespace Spotifalso.Infrastructure.Data.Search
 		static SearchConfig()
 		{
 			_connectionSettings = new ConnectionSettings(new Uri($"http://localhost:9200"))
-				.DefaultIndex("spotifalso")
-				.DefaultMappingFor<Music>(i => i
-					.IndexName("music")
-				);
+				.EnableDebugMode()
+				.PrettyJson(true);
 		}
 	}
 }

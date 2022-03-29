@@ -9,9 +9,9 @@ namespace Spotifalso.Core.Models
         public Guid? CoverImageId { get; private set; }
         public string Title { get; private set; }
         public string Lyrics { get; private set; }
-        public List<Artist> Artists { get; private set; }
         public TimeSpan Duration { get; private set; }
         public DateTime ReleaseDate { get; private set; }
+        public ICollection<Artist> Artists { get; private set; }
 
         public Music(
             Guid? coverImageId,

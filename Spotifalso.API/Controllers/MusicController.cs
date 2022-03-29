@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Spotifalso.Aplication.Inputs;
 using Spotifalso.Aplication.Interfaces.Services;
+using Spotifalso.Aplication.ViewModels;
 using Spotifalso.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,12 @@ namespace Spotifalso.API.Controllers
         public async Task<IEnumerable<Music>> Get()
         {
             return await _musicService.GetAllAsync();
+        }
+
+        [HttpGet("search")]
+        public async Task<IEnumerable<MusicViewModel>> Search([FromQuery] string term)
+        {
+            return await _musicService.SearchAsync(term);
         }
 
         [HttpGet("{id}")]
