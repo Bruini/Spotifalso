@@ -39,7 +39,8 @@ namespace Spotifalso.Infrastructure.Data.Config.Mappings
                 .HasColumnName("ReleaseDate")
                 .IsRequired(true);
 
-            builder.HasMany(m => m.Artists);
+            builder.HasMany(m => m.Artists)
+                .WithMany(m => m.Musics);
         }
     }
 }

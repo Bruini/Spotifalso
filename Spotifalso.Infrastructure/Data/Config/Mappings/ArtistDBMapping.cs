@@ -34,7 +34,8 @@ namespace Spotifalso.Infrastructure.Data.Config.Mappings
                 .HasMaxLength(100)
                 .IsRequired();
 
-            builder.HasMany(a => a.Musics);
+            builder.HasMany(a => a.Musics)
+                .WithMany(m => m.Artists);
         }
     }
 }
