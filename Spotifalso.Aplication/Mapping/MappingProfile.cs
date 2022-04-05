@@ -9,6 +9,10 @@ namespace Spotifalso.Aplication.Mapping
         public MappingProfile()
         {
             CreateMap<User, UserViewModel>();
+            CreateMap<Artist, ArtistViewModel>();
+            CreateMap<Artist, ArtistMusicViewModel>();
+            CreateMap<Music, MusicViewModel>();
+            CreateMap<Music, MusicArtistViewModel>();
         }
     }
 }

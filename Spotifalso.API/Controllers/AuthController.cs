@@ -44,7 +44,7 @@ namespace Spotifalso.API.Controllers
                     Password = password
                 };
             }
-            catch(Exception ex)
+            catch (Exception)
             {
                 throw;
             }

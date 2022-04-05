@@ -9,10 +9,10 @@ namespace Spotifalso.Aplication.Interfaces.Services
 {
     public interface IMusicService
     {
-        Task<IEnumerable<Music>> GetAllAsync();
-        Task<Music> GetByIdAsync(Guid id);
-        Task<Music> InsertAsync(MusicInput musicInput);
-        Task<Music> UpdateAsync(Guid id, MusicInput musicInput);
+        Task<IEnumerable<MusicViewModel>> GetAllAsync();
+        Task<MusicViewModel> GetByIdAsync(Guid id);
+        Task<MusicViewModel> InsertAsync(MusicInput musicInput);
+        Task<MusicViewModel> UpdateAsync(Guid id, MusicInput musicInput);
         Task DeleteAsync(Guid id);
         Task<IEnumerable<MusicViewModel>> SearchAsync(string searchTerm);
     }

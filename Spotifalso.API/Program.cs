@@ -8,7 +8,6 @@ using Spotifalso.Aplication.Interfaces.Services;
 using Spotifalso.Core.Enums;
 using Spotifalso.Infrastructure.Data.Config;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -75,7 +74,7 @@ namespace Spotifalso.API
                     await userService.InsertAsync(userInput, claim);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

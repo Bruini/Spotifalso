@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Spotifalso.Aplication.Inputs;
 using Spotifalso.Aplication.Interfaces.Services;
 using Spotifalso.Aplication.ViewModels;
-using Spotifalso.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -23,7 +22,7 @@ namespace Spotifalso.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Music>> Get()
+        public async Task<IEnumerable<MusicViewModel>> Get()
         {
             return await _musicService.GetAllAsync();
         }
@@ -35,19 +34,19 @@ namespace Spotifalso.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Music> Get(Guid id)
+        public async Task<MusicViewModel> Get(Guid id)
         {
             return await _musicService.GetByIdAsync(id);
         }
 
         [HttpPost]
-        public async Task<Music> Post([FromBody] MusicInput musicInput)
+        public async Task<MusicViewModel> Post([FromBody] MusicInput musicInput)
         {
             return await _musicService.InsertAsync(musicInput);
         }
 
         [HttpPut("{id}")]
-        public async Task<Music> Put(Guid id, [FromBody] MusicInput musicInput)
+        public async Task<MusicViewModel> Put(Guid id, [FromBody] MusicInput musicInput)
         {
             return await _musicService.UpdateAsync(id, musicInput);
         }

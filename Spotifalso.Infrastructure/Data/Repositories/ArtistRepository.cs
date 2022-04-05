@@ -41,7 +41,9 @@ namespace Spotifalso.Infrastructure.Data.Repositories
 
         public async Task<IEnumerable<Artist>> GetAllAsync()
         {
-            return await _context.Artists.ToListAsync();
+            return await _context.Artists
+                .Include(a => a.Musics)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Artist>> GetAllByIdListAsync(IEnumerable<Guid> ids)
@@ -58,7 +60,9 @@ namespace Spotifalso.Infrastructure.Data.Repositories
 
         public async Task<Artist> GetByIdAsync(Guid id)
         {
-            return await _context.Artists.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.Artists
+                .Include(a => a.Musics)
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<Artist> GetByName(string name)

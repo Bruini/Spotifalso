@@ -1,8 +1,10 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Spotifalso.Aplication.Inputs;
 using Spotifalso.Aplication.Interfaces.Infrastructure;
 using Spotifalso.Aplication.Interfaces.Repositories;
 using Spotifalso.Aplication.Interfaces.Services;
+using Spotifalso.Aplication.ViewModels;
 using Spotifalso.Core.Exceptions;
 using Spotifalso.Core.Models;
 using System;
@@ -19,17 +21,20 @@ namespace Spotifalso.Aplication.Services
         private readonly IUserService _userService;
         private readonly IValidator<ArtistInput> _validator;
         private readonly IArtistNotificationService _followArtistNotificationService;
+        private readonly IMapper _mapper;
         public ArtistService(
             IArtistRepository artistRepository,
             IUserService userService,
             IValidator<ArtistInput> validator,
-            IArtistNotificationService followArtistNotificationService
+            IArtistNotificationService followArtistNotificationService,
+            IMapper mapper
             )
         {
             _userService = userService;
             _artistRepository = artistRepository;
             _validator = validator;
             _followArtistNotificationService = followArtistNotificationService;
+            _mapper = mapper;
         }
         public async Task DeleteAsync(Guid id)
         {
@@ -55,20 +60,20 @@ namespace Spotifalso.Aplication.Services
             return await _followArtistNotificationService.FollowArtist(id, userId, emailInput.Email);
         }
 
-        public async Task<IEnumerable<Artist>> GetAllAsync() 
-            => await _artistRepository.GetAllAsync();
+        public async Task<IEnumerable<ArtistViewModel>> GetAllAsync()
+            => _mapper.Map<IEnumerable<ArtistViewModel>>(await _artistRepository.GetAllAsync());
 
-        public async Task<Artist> GetByIdAsync(Guid id)
+        public async Task<ArtistViewModel> GetByIdAsync(Guid id)
         {
             var artist = await _artistRepository.GetByIdAsync(id);
 
             if (artist is null)
                 throw new ArtistNotFoundException(id);
 
-            return artist;
+            return _mapper.Map<ArtistViewModel>(artist);
         }
 
-        public async Task<Artist> InsertAsync(ArtistInput artistInput)
+        public async Task<ArtistViewModel> InsertAsync(ArtistInput artistInput)
         {
             await _validator.ValidateAndThrowAsync(artistInput);
             await ValidateArtistExists(artistInput);
@@ -78,10 +83,10 @@ namespace Spotifalso.Aplication.Services
             await _artistRepository.AddAsync(artist);
             await _artistRepository.SaveChangesAsync();
 
-            return artist;
+            return _mapper.Map<ArtistViewModel>(artist);
         }
 
-        public async Task<Artist> UpdateAsync(Guid id, ArtistInput artistInput)
+        public async Task<ArtistViewModel> UpdateAsync(Guid id, ArtistInput artistInput)
         {
             var artist = await _artistRepository.GetByIdAsync(id);
             if (artist is null)
@@ -101,7 +106,7 @@ namespace Spotifalso.Aplication.Services
             _artistRepository.Update(artist);
             await _artistRepository.SaveChangesAsync();
 
-            return artist;
+            return _mapper.Map<ArtistViewModel>(artist);
         }
 
         private async Task ValidateArtistExists(ArtistInput artistInput)

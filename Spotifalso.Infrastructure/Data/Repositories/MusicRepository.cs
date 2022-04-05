@@ -28,12 +28,16 @@ namespace Spotifalso.Infrastructure.Data.Repositories
 
         public async Task<IEnumerable<Music>> GetAllAsync()
         {
-            return await _context.Musics.ToListAsync();
+            return await _context.Musics
+                .Include(m => m.Artists)
+                .ToListAsync();
         }
 
         public async Task<Music> GetByIdAsync(Guid id)
         {
-            return await _context.Musics.FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.Musics
+                .Include(m => m.Artists)
+                .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task SaveChangesAsync()

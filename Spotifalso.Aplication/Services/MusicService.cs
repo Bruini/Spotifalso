@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using Spotifalso.Aplication.Inputs;
 using Spotifalso.Aplication.Interfaces.Infrastructure;
 using Spotifalso.Aplication.Interfaces.Repositories;
@@ -20,13 +21,15 @@ namespace Spotifalso.Aplication.Services
         private readonly IValidator<MusicInput> _validator;
         private readonly IMusicSearchService _musicSearchService;
         private readonly IArtistNotificationService _artistNotificationService;
+        private readonly IMapper _mapper;
 
         public MusicService(
             IMusicRepository musicRepository,
             IValidator<MusicInput> validator,
             IMusicSearchService musicSearchService,
             IArtistNotificationService artistNotificationService,
-            IArtistRepository artistRepository
+            IArtistRepository artistRepository,
+            IMapper mapper
             )
         {
             _musicRepository = musicRepository;
@@ -34,9 +37,10 @@ namespace Spotifalso.Aplication.Services
             _musicSearchService = musicSearchService;
             _artistNotificationService = artistNotificationService;
             _artistRepository = artistRepository;
+            _mapper = mapper;
         }
 
-        public async Task<Music> InsertAsync(MusicInput musicInput)
+        public async Task<MusicViewModel> InsertAsync(MusicInput musicInput)
         {
             await _validator.ValidateAndThrowAsync(musicInput);
 
@@ -58,7 +62,7 @@ namespace Spotifalso.Aplication.Services
             await _musicSearchService.IndexAsync(music);
             await NotifyNewMusic(music, artists);
 
-            return music;
+            return _mapper.Map<MusicViewModel>(music);
         }
 
         public async Task DeleteAsync(Guid id)
@@ -71,28 +75,28 @@ namespace Spotifalso.Aplication.Services
             await _musicRepository.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Music>> GetAllAsync()
-            => await _musicRepository.GetAllAsync();
+        public async Task<IEnumerable<MusicViewModel>> GetAllAsync()
+            => _mapper.Map<IEnumerable<MusicViewModel>>(await _musicRepository.GetAllAsync());
 
-        public async Task<Music> GetByIdAsync(Guid id)
+        public async Task<MusicViewModel> GetByIdAsync(Guid id)
         {
             var music = await _musicRepository.GetByIdAsync(id);
 
             if (music is null)
                 throw new MusicNotFoundException(id);
 
-            return music;
+            return _mapper.Map<MusicViewModel>(music);
         }
 
         public async Task<IEnumerable<MusicViewModel>> SearchAsync(string searchTerm)
         {
-            if(searchTerm == null || string.IsNullOrWhiteSpace(searchTerm))
+            if (searchTerm == null || string.IsNullOrWhiteSpace(searchTerm))
                 throw new ArgumentNullException(nameof(searchTerm));
 
             return await _musicSearchService.SearchInAllFields(searchTerm);
         }
 
-        public async Task<Music> UpdateAsync(Guid id, MusicInput musicInput)
+        public async Task<MusicViewModel> UpdateAsync(Guid id, MusicInput musicInput)
         {
             var music = await _musicRepository.GetByIdAsync(id);
             if (music is null)
@@ -109,7 +113,7 @@ namespace Spotifalso.Aplication.Services
             _musicRepository.Update(music);
             await _musicRepository.SaveChangesAsync();
 
-            return music;
+            return _mapper.Map<MusicViewModel>(music);
         }
 
         private async Task NotifyNewMusic(Music music, IEnumerable<Artist> artists)

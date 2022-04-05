@@ -1,7 +1,9 @@
-﻿using Moq;
+﻿using AutoMapper;
+using Moq;
 using Spotifalso.Aplication.Interfaces.Infrastructure;
 using Spotifalso.Aplication.Interfaces.Repositories;
 using Spotifalso.Aplication.Interfaces.Services;
+using Spotifalso.Aplication.Mapping;
 using Spotifalso.Aplication.Services;
 using Spotifalso.Aplication.Validators;
 using Spotifalso.Core.Exceptions;
@@ -21,6 +23,7 @@ namespace Spotifalso.UnitTests.Applications
         private readonly Mock<IUserService> _userServiceMock;
         private readonly Mock<IArtistNotificationService> _followArtistServiceMock;
         private readonly ArtistValidator _artistValidator;
+        private readonly IMapper _mapper;
 
         public ArtistServiceTest()
         {
@@ -28,6 +31,15 @@ namespace Spotifalso.UnitTests.Applications
             _userServiceMock = new Mock<IUserService>();
             _followArtistServiceMock = new Mock<IArtistNotificationService>();
             _artistValidator = new ArtistValidator();
+            if (_mapper == null)
+            {
+                var mappingConfig = new MapperConfiguration(mc =>
+                {
+                    mc.AddProfile(new MappingProfile());
+                });
+                IMapper mapper = mappingConfig.CreateMapper();
+                _mapper = mapper;
+            }
         }
 
         [Fact]
@@ -35,7 +47,7 @@ namespace Spotifalso.UnitTests.Applications
         {
             _artistRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(GetFakeArtists());
 
-            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object);
+            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object, _mapper);
 
             var artists = await artistService.GetAllAsync();
 
@@ -50,7 +62,7 @@ namespace Spotifalso.UnitTests.Applications
 
             _artistRepositoryMock.Setup(x => x.GetByIdAsync(artist.Id)).ReturnsAsync(artist);
 
-            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object);
+            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object, _mapper);
 
             var artistFromDb = await artistService.GetByIdAsync(artist.Id);
 
@@ -68,7 +80,7 @@ namespace Spotifalso.UnitTests.Applications
 
             _artistRepositoryMock.Setup(x => x.GetByIdAsync(artist.Id)).ReturnsAsync(artist);
 
-            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object);
+            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object, _mapper);
 
             await artistService.DeleteAsync(artist.Id);
 
@@ -81,7 +93,7 @@ namespace Spotifalso.UnitTests.Applications
         public async Task Should_Delete_artist_By_Id_Expected_artistNotFoundException()
         {
             var artist = GetFakeArtists().FirstOrDefault();
-            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object);
+            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object, _mapper);
 
             var ex = await Assert.ThrowsAsync<ArtistNotFoundException>(() => artistService.DeleteAsync(artist.Id));
 
@@ -119,7 +131,7 @@ namespace Spotifalso.UnitTests.Applications
                     });
             _followArtistServiceMock.Setup(x => x.FollowArtist(artist.Id, userId, "teste@teste.com")).ReturnsAsync(true);
 
-            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object);
+            var artistService = new ArtistService(_artistRepositoryMock.Object, _userServiceMock.Object, _artistValidator, _followArtistServiceMock.Object, _mapper);
 
             var response = await artistService.FollowArtistAsync(artist.Id, userClaim, new Aplication.Inputs.EmailInput { Email = "teste@teste.com" });
 
