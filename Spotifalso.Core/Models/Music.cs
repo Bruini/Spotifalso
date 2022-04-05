@@ -12,6 +12,7 @@ namespace Spotifalso.Core.Models
         public TimeSpan Duration { get; private set; }
         public DateTime ReleaseDate { get; private set; }
         public ICollection<Artist> Artists { get; private set; }
+        public ICollection<Album> Albums { get; private set; }
 
         public Music(
             Guid? coverImageId,
@@ -25,6 +26,7 @@ namespace Spotifalso.Core.Models
             Title = title;
             Lyrics = lyrics;
             Artists = new List<Artist>();
+            Albums = new List<Album>();
             Duration = duration;
             ReleaseDate = releaseDate;
         }

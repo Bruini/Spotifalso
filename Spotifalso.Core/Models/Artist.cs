@@ -10,6 +10,7 @@ namespace Spotifalso.Core.Models
         public string Bio { get; private set; }
         public string Name { get; private set; }
         public ICollection<Music> Musics { get; private set; }
+        public ICollection<Album> Albums { get; private set; }
 
         public Artist(string displayName, string bio, string name)
         {
@@ -17,6 +18,8 @@ namespace Spotifalso.Core.Models
             DisplayName = displayName;
             Bio = bio;
             Name = name;
+            Musics = new List<Music>();
+            Albums = new List<Album>();
         }
 
         public void ChangeDisplayName(string displayName)

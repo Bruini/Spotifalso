@@ -41,6 +41,9 @@ namespace Spotifalso.Infrastructure.Data.Config.Mappings
 
             builder.HasMany(m => m.Artists)
                 .WithMany(m => m.Musics);
+
+            builder.HasMany(m => m.Albums)
+                .WithMany(m => m.Songs);
         }
     }
 }
